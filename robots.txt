@@ -1,0 +1,85 @@
+# robots.txt — BetWise.com
+# Updated: 2026-05-06
+
+# ─────────────────────────────────────
+# Allow all major search engine crawlers
+# ─────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 5
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 5
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 3
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 10
+
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 5
+
+# ─────────────────────────────────────
+# Block bad bots & scrapers
+# ─────────────────────────────────────
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+# ─────────────────────────────────────
+# Global rules for all other bots
+# ─────────────────────────────────────
+User-agent: *
+Allow: /
+
+# Block admin, staging, and API paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /staging/
+Disallow: /dev/
+Disallow: /_next/
+Disallow: /node_modules/
+Disallow: /.env
+
+# Block duplicate/parameter URLs that could cause thin content issues
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /*?ref=
+Disallow: /*?utm_
+Disallow: /*?session=
+Disallow: /*&print=
+
+# Block search result pages (no indexable value)
+Disallow: /search/
+
+# ─────────────────────────────────────
+# Sitemap location
+# ─────────────────────────────────────
+Sitemap: https://betwise.com/sitemap.xml
+Sitemap: https://betwise.com/sitemap-blog.xml

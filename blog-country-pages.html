@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetWise — Blog & Country Page Generator</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f7f8fa;color:#1a1a2e}
+nav{background:#fff;border-bottom:1.5px solid #e5e7eb;padding:0 20px;position:sticky;top:0;z-index:99}
+.nav-i{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-size:20px;font-weight:800}.logo em{color:#16a34a;font-style:normal}
+.nav-tabs{display:flex;gap:4px}
+.ntab{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#6b7280;border:none;background:transparent}
+.ntab.active{background:#16a34a;color:#fff}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+
+/* TABS */
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* SECTION HEADER */
+.sec-head{background:#fff;border-radius:14px;border:1.5px solid #e5e7eb;padding:24px 28px;margin-bottom:22px}
+.sec-head h2{font-size:22px;font-weight:800;color:#111827;margin-bottom:6px}
+.sec-head p{font-size:14px;color:#6b7280;line-height:1.6}
+
+/* GENERATE BAR */
+.gen-bar{background:#fff;border-radius:12px;border:1.5px solid #e5e7eb;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn-all{background:#1d4ed8;color:#fff;border:none;padding:11px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer}
+.btn-all:hover{background:#1e40af}
+.btn-all:disabled{background:#9ca3af;cursor:not-allowed}
+.gen-label{font-size:14px;color:#6b7280;flex:1}
+.prog-label{font-size:13px;color:#9ca3af;margin-left:auto}
+
+/* CARD GRID */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.gen-card{background:#fff;border-radius:13px;border:1.5px solid #e5e7eb;padding:18px;transition:border-color .2s;position:relative}
+.gen-card.generating{border-color:#3b82f6;background:#f0f9ff}
+.gen-card.done{border-color:#16a34a;background:#f0fdf4}
+.gen-card.error{border-color:#ef4444;background:#fef2f2}
+.card-title{font-size:15px;font-weight:700;color:#111827;margin-bottom:4px}
+.card-url{font-size:11.5px;color:#9ca3af;margin-bottom:10px}
+.card-meta{font-size:12.5px;color:#6b7280;margin-bottom:10px;line-height:1.5}
+.card-progress{height:4px;border-radius:2px;background:#e5e7eb;margin-bottom:8px;overflow:hidden}
+.card-fill{height:4px;border-radius:2px;background:#16a34a;width:0;transition:width .4s}
+.card-fill.loading{background:#3b82f6;animation:pa 1.5s infinite}
+@keyframes pa{0%{width:0}60%{width:80%}100%{width:90%}}
+.card-status{font-size:12px;font-weight:600;min-height:16px;margin-bottom:10px}
+.card-actions{display:flex;gap:8px}
+.btn-gen{background:#16a34a;color:#fff;border:none;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;flex:1}
+.btn-gen:disabled{background:#9ca3af;cursor:not-allowed}
+.btn-gen:hover:not(:disabled){background:#15803d}
+.btn-preview{background:#fff;color:#16a34a;border:1.5px solid #16a34a;padding:7px 12px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;display:none}
+.btn-dl{background:#fff;color:#374151;border:1.5px solid #e5e7eb;padding:7px 12px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;display:none}
+.cbadge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.cbadge-done{background:#dcfce7;color:#15803d}
+.cbadge-gen{background:#dbeafe;color:#1d4ed8}
+.cbadge-err{background:#fee2e2;color:#dc2626}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;overflow-y:auto;padding:20px;align-items:flex-start;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:860px;max-height:88vh;overflow-y:auto;padding:28px;margin:auto}
+.modal-close{float:right;background:#f3f4f6;border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal h2{font-size:20px;font-weight:800;color:#111827;margin-bottom:14px;clear:both}
+.modal-body{font-size:14px;color:#374151;line-height:1.7}
+.modal-body h2{font-size:17px;margin:20px 0 8px;color:#111827}
+.modal-body h3{font-size:15px;margin:14px 0 6px;color:#111827;font-weight:700}
+.modal-body p{margin-bottom:10px}
+.modal-body ul{margin:8px 0 12px 20px}
+.modal-body li{margin-bottom:5px}
+.modal-acts{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn-mdl{padding:10px 22px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none}
+.btn-mdl-g{background:#16a34a;color:#fff}
+.btn-mdl-w{background:#fff;color:#374151;border:1.5px solid #e5e7eb}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.sbox{background:#fff;border-radius:10px;border:1.5px solid #e5e7eb;padding:14px;text-align:center}
+.sbox .sv{font-size:24px;font-weight:800;color:#111827}
+.sbox .sl{font-size:11.5px;color:#9ca3af;margin-top:2px}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+
+footer{background:#0f172a;color:#64748b;padding:24px 20px;text-align:center;font-size:12px;margin-top:40px}
+.flogo{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px}.flogo em{color:#4ade80;font-style:normal}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-i">
+    <div class="logo">Bet<em>Wise</em></div>
+    <div class="nav-tabs">
+      <button class="ntab active" onclick="switchTab('blog',this)">📝 Blog Articles</button>
+      <button class="ntab" onclick="switchTab('country',this)">🌍 Country Pages</button>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ═══════════════ BLOG TAB ═══════════════ -->
+  <div class="tab-panel active" id="tab-blog">
+    <div class="sec-head">
+      <h2>📝 SEO Blog Article Generator</h2>
+      <p>Generates complete, long-form SEO articles targeting high-traffic betting keywords. Each article is 1,000–1,500 words with proper H1/H2 structure, internal links, FAQ schema, and meta tags. These articles drive organic Google traffic to your main comparison pages.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="sbox"><div class="sv" id="b-total">12</div><div class="sl">Articles</div></div>
+      <div class="sbox"><div class="sv" id="b-done">0</div><div class="sl">Generated</div></div>
+      <div class="sbox"><div class="sv" id="b-words">0</div><div class="sl">Total Words</div></div>
+      <div class="sbox"><div class="sv" id="b-kw">—</div><div class="sl">Keywords Targeted</div></div>
+    </div>
+
+    <div class="gen-bar">
+      <button class="btn-all" id="btn-blog-all" onclick="genAllBlog()">⚡ Generate All 12 Articles</button>
+      <div class="gen-label">AI writes full SEO articles. Each ~1,200 words targeting a specific keyword cluster.</div>
+      <div class="prog-label" id="blog-prog">0 / 12</div>
+    </div>
+
+    <div class="card-grid" id="blogGrid"></div>
+  </div>
+
+  <!-- ═══════════════ COUNTRY TAB ═══════════════ -->
+  <div class="tab-panel" id="tab-country">
+    <div class="sec-head">
+      <h2>🌍 Country Landing Page Generator</h2>
+      <p>Generates geo-targeted landing pages for each major market. Each page shows only licensed operators for that country, includes local regulations info, currency, language notes, and targets country-specific keywords like "best betting sites Sweden 2026".</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="sbox"><div class="sv" id="c-total">10</div><div class="sl">Countries</div></div>
+      <div class="sbox"><div class="sv" id="c-done">0</div><div class="sl">Generated</div></div>
+      <div class="sbox"><div class="sv" id="c-words">0</div><div class="sl">Total Words</div></div>
+      <div class="sbox"><div class="sv" id="c-legal">10</div><div class="sl">Legal Checks</div></div>
+    </div>
+
+    <div class="gen-bar">
+      <button class="btn-all" id="btn-country-all" onclick="genAllCountry()">⚡ Generate All 10 Country Pages</button>
+      <div class="gen-label">AI writes geo-targeted pages with local legal info, currency, top operators per market.</div>
+      <div class="prog-label" id="country-prog">0 / 10</div>
+    </div>
+
+    <div class="card-grid" id="countryGrid"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="modal-title"></h2>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-acts">
+      <button class="btn-mdl btn-mdl-g" id="btn-modal-dl">⬇ Download HTML</button>
+      <button class="btn-mdl btn-mdl-w" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="flogo">Bet<em>Wise</em></div>
+  <div>BetWise Content Generator · Powered by Claude AI</div>
+</footer>
+
+<script>
+// ═══════════ DATA ═══════════
+const BLOG_ARTICLES = [
+  {id:'b1', slug:'best-betting-sites-2026', title:'Best Betting Sites 2026 — Complete Guide',
+   keyword:'best betting sites 2026', difficulty:'High', volume:'90,000/mo',
+   desc:'Comprehensive guide targeting the highest-volume keyword in the niche.'},
+  {id:'b2', slug:'how-to-claim-free-bets', title:'How to Claim Free Bets — Step by Step',
+   keyword:'how to claim free bets', difficulty:'Medium', volume:'18,000/mo',
+   desc:'Tutorial article explaining exactly how welcome bonuses and free bets work.'},
+  {id:'b3', slug:'best-betting-bonuses-2026', title:'Best Betting Bonuses & Promo Codes 2026',
+   keyword:'betting bonuses 2026', difficulty:'High', volume:'40,000/mo',
+   desc:'Roundup of all current welcome offers, updated monthly.'},
+  {id:'b4', slug:'what-is-revshare', title:'What is Revenue Share? Affiliate Betting Explained',
+   keyword:'revshare affiliate betting', difficulty:'Low', volume:'3,000/mo',
+   desc:'Educational article about how betting affiliate programs work.'},
+  {id:'b5', slug:'bet365-vs-william-hill', title:'bet365 vs William Hill 2026 — Which is Better?',
+   keyword:'bet365 vs william hill', difficulty:'Medium', volume:'22,000/mo',
+   desc:'Head-to-head comparison article — high conversion page.'},
+  {id:'b6', slug:'best-live-betting-sites', title:'Best Live Betting Sites 2026 — In-Play Guide',
+   keyword:'best live betting sites', difficulty:'Medium', volume:'15,000/mo',
+   desc:'Targets in-play bettors — growing segment of the market.'},
+  {id:'b7', slug:'betting-odds-explained', title:'How Betting Odds Work — Beginner\'s Guide 2026',
+   keyword:'how do betting odds work', difficulty:'Low', volume:'45,000/mo',
+   desc:'Educational evergreen content that attracts new bettors searching for basics.'},
+  {id:'b8', slug:'best-football-betting-sites', title:'Best Football Betting Sites 2026',
+   keyword:'best football betting sites', difficulty:'High', volume:'60,000/mo',
+   desc:'Football-specific comparison page targeting the biggest sport in betting.'},
+  {id:'b9', slug:'betting-apps-review', title:'Best Betting Apps 2026 — Top Mobile Sportsbooks',
+   keyword:'best betting apps 2026', difficulty:'High', volume:'35,000/mo',
+   desc:'Mobile-focused comparison — massive search volume.'},
+  {id:'b10', slug:'responsible-gambling-guide', title:'Responsible Gambling Guide — Tools & Resources',
+   keyword:'responsible gambling tools', difficulty:'Low', volume:'8,000/mo',
+   desc:'Required for compliance with affiliate programs. Shows trustworthiness to Google.'},
+  {id:'b11', slug:'best-esports-betting-sites', title:'Best Esports Betting Sites 2026',
+   keyword:'esports betting sites 2026', difficulty:'Medium', volume:'12,000/mo',
+   desc:'Fast-growing niche with less competition than traditional sports.'},
+  {id:'b12', slug:'crypto-betting-sites', title:'Best Crypto Betting Sites 2026 — Bitcoin & More',
+   keyword:'crypto betting sites 2026', difficulty:'Medium', volume:'20,000/mo',
+   desc:'Targets the growing crypto gambling segment.'},
+];
+
+const COUNTRIES = [
+  {id:'c-gb', code:'gb', name:'United Kingdom', flag:'🇬🇧', slug:'united-kingdom',
+   currency:'GBP', regulator:'UK Gambling Commission (UKGC)', legal:true,
+   sites:'bet365, William Hill, Betway, Unibet, Betsson',
+   notes:'Strict UKGC regulation. No crypto ads. Affordability checks required.'},
+  {id:'c-se', code:'se', name:'Sweden', flag:'🇸🇪', slug:'sweden',
+   currency:'SEK', regulator:'Spelinspektionen', legal:true,
+   sites:'Betsson, Unibet, bet365, Betway',
+   notes:'Swedish licence required. Bonus restrictions apply. Spelpaus self-exclusion.'},
+  {id:'c-no', code:'no', name:'Norway', flag:'🇳🇴', slug:'norway',
+   currency:'NOK', regulator:'Lotteri- og stiftelsestilsynet', legal:'grey',
+   sites:'Betsson, Unibet, 1xBet, Betway, Parimatch',
+   notes:'Only Norsk Tipping is fully licensed. Offshore sites operate in grey area.'},
+  {id:'c-de', code:'de', name:'Germany', flag:'🇩🇪', slug:'germany',
+   currency:'EUR', regulator:'GGL (Gemeinsame Glücksspielbehörde)', legal:true,
+   sites:'bet365, William Hill, Betway, 1xBet, Betsson',
+   notes:'New treaty 2021. Sports betting licensed. Casino slots restricted to €1/spin.'},
+  {id:'c-fi', code:'fi', name:'Finland', flag:'🇫🇮', slug:'finland',
+   currency:'EUR', regulator:'Veikkaus monopoly (reform pending)', legal:'grey',
+   sites:'Betsson, Unibet, Betway',
+   notes:'Veikkaus holds monopoly but offshore sites tolerated. Reform expected 2026–2027.'},
+  {id:'c-ca', code:'ca', name:'Canada', flag:'🇨🇦', slug:'canada',
+   currency:'CAD', regulator:'Provincial (AGCO, BCLC, AGLC)', legal:true,
+   sites:'bet365, DraftKings, Betway, Unibet',
+   notes:'Ontario fully regulated since 2022. Other provinces vary. iGaming Ontario is key.'},
+  {id:'c-au', code:'au', name:'Australia', flag:'🇦🇺', slug:'australia',
+   currency:'AUD', regulator:'ACMA (Australian Communications & Media Authority)', legal:true,
+   sites:'bet365, Sportsbet.io, Unibet, Betway',
+   notes:'Online sports betting legal. In-play betting prohibited. Casino apps not legal.'},
+  {id:'c-us', code:'us', name:'United States', flag:'🇺🇸', slug:'united-states',
+   currency:'USD', regulator:'State-by-state (NJDGE, PGCB, etc.)', legal:true,
+   sites:'FanDuel, DraftKings, BetMGM, Caesars, bet365',
+   notes:'Legal in 39+ states. Each state has own regulations. Must verify state before promoting.'},
+  {id:'c-in', code:'in', name:'India', flag:'🇮🇳', slug:'india',
+   currency:'INR', regulator:'No federal regulator (state-by-state)', legal:'grey',
+   sites:'1xBet, Parimatch, Betway, bet365',
+   notes:'No federal betting law. Offshore sites widely used. Goa, Sikkim, Meghalaya have local laws.'},
+  {id:'c-br', code:'br', name:'Brazil', flag:'🇧🇷', slug:'brazil',
+   currency:'BRL', regulator:'SPA (Secretaria de Premios e Apostas)', legal:true,
+   sites:'bet365, 1xBet, Parimatch, Sportsbet.io',
+   notes:'Sports betting legalised 2023. Full framework effective 2025. Fast-growing market.'},
+];
+
+const generated = {};
+
+// ═══════════ TAB SWITCH ═══════════
+function switchTab(name, el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ═══════════ RENDER CARDS ═══════════
+function renderBlogCards(){
+  const grid = document.getElementById('blogGrid');
+  grid.innerHTML = '';
+  BLOG_ARTICLES.forEach(a=>{
+    const d = document.createElement('div');
+    d.className='gen-card'; d.id='card-'+a.id;
+    d.innerHTML=`
+      <div class="card-title">${a.title}</div>
+      <div class="card-url">betwise.com/blog/${a.slug}/</div>
+      <div class="card-meta">
+        🔑 <strong>${a.keyword}</strong><br>
+        📊 Volume: ${a.volume} &nbsp;·&nbsp; Difficulty: ${a.difficulty}
+      </div>
+      <div class="card-progress"><div class="card-fill" id="fill-${a.id}"></div></div>
+      <div class="card-status" id="st-${a.id}">Ready</div>
+      <div class="card-actions">
+        <button class="btn-gen" id="bg-${a.id}" onclick="genBlog('${a.id}')">Generate Article</button>
+        <button class="btn-preview" id="bp-${a.id}" onclick="preview('${a.id}')">Preview</button>
+        <button class="btn-dl" id="bd-${a.id}" onclick="dlPage('${a.id}')">⬇</button>
+      </div>`;
+    grid.appendChild(d);
+  });
+}
+
+function renderCountryCards(){
+  const grid = document.getElementById('countryGrid');
+  grid.innerHTML = '';
+  COUNTRIES.forEach(c=>{
+    const legalColor = c.legal===true?'#16a34a':c.legal==='grey'?'#b45309':'#dc2626';
+    const legalLabel = c.legal===true?'✅ Legal':c.legal==='grey'?'⚠️ Grey market':'❌ Restricted';
+    const d = document.createElement('div');
+    d.className='gen-card'; d.id='card-'+c.id;
+    d.innerHTML=`
+      <div class="card-title">${c.flag} ${c.name}</div>
+      <div class="card-url">betwise.com/betting-sites/${c.slug}/</div>
+      <div class="card-meta">
+        <span style="color:${legalColor};font-weight:700">${legalLabel}</span><br>
+        🏛️ ${c.regulator}<br>
+        💰 ${c.currency} · Sites: ${c.sites}
+      </div>
+      <div class="card-progress"><div class="card-fill" id="fill-${c.id}"></div></div>
+      <div class="card-status" id="st-${c.id}">Ready</div>
+      <div class="card-actions">
+        <button class="btn-gen" id="bg-${c.id}" onclick="genCountry('${c.id}')">Generate Page</button>
+        <button class="btn-preview" id="bp-${c.id}" onclick="preview('${c.id}')">Preview</button>
+        <button class="btn-dl" id="bd-${c.id}" onclick="dlPage('${c.id}')">⬇</button>
+      </div>`;
+    grid.appendChild(d);
+  });
+}
+
+// ═══════════ CARD STATE ═══════════
+function setCardState(id, state, msg){
+  const card=document.getElementById('card-'+id);
+  const fill=document.getElementById('fill-'+id);
+  const st=document.getElementById('st-'+id);
+  const bg=document.getElementById('bg-'+id);
+  const bp=document.getElementById('bp-'+id);
+  const bd=document.getElementById('bd-'+id);
+  card.querySelectorAll('.cbadge').forEach(b=>b.remove());
+  if(state==='loading'){
+    card.className='gen-card generating';
+    fill.className='card-fill loading';
+    st.innerHTML=`<span style="color:#3b82f6">⏳ ${msg||'Generating...'}</span>`;
+    bg.disabled=true;
+    const b=document.createElement('div'); b.className='cbadge cbadge-gen'; b.textContent='AI writing...'; card.appendChild(b);
+  } else if(state==='done'){
+    card.className='gen-card done';
+    fill.className='card-fill'; fill.style.width='100%';
+    st.innerHTML=`<span style="color:#16a34a">✅ ${msg||'Done!'}</span>`;
+    bg.disabled=false; bg.textContent='Regen';
+    bp.style.display='inline-block'; bd.style.display='inline-block';
+    const b=document.createElement('div'); b.className='cbadge cbadge-done'; b.textContent='✓ Done'; card.appendChild(b);
+  } else if(state==='error'){
+    card.className='gen-card error';
+    st.innerHTML=`<span style="color:#dc2626">❌ ${msg||'Error'}</span>`;
+    bg.disabled=false;
+    const b=document.createElement('div'); b.className='cbadge cbadge-err'; b.textContent='Failed'; card.appendChild(b);
+  }
+}
+
+// ═══════════ GENERATE BLOG ═══════════
+async function genBlog(id){
+  const art = BLOG_ARTICLES.find(a=>a.id===id);
+  setCardState(id,'loading','Claude writing...');
+  const prompt=`Write a complete SEO blog article for a betting affiliate site called BetWise. Return ONLY valid JSON (no markdown):
+{
+  "metaTitle": "SEO title max 60 chars targeting: ${art.keyword}",
+  "metaDesc": "Meta description max 155 chars",
+  "intro": "Engaging 100-word intro paragraph for the article",
+  "sections": [
+    {"h2": "Section heading", "body": "200+ word section body with useful info"},
+    {"h2": "Section heading 2", "body": "200+ word section body"},
+    {"h2": "Section heading 3", "body": "150+ word section body"},
+    {"h2": "Section heading 4", "body": "150+ word section body"}
+  ],
+  "faqs": [
+    {"q": "FAQ question 1?", "a": "Detailed answer 50+ words"},
+    {"q": "FAQ question 2?", "a": "Detailed answer 50+ words"},
+    {"q": "FAQ question 3?", "a": "Detailed answer 50+ words"}
+  ],
+  "conclusion": "100-word concluding paragraph with CTA to main BetWise comparison page",
+  "wordCount": 1200
+}
+Topic: "${art.title}" | Primary keyword: "${art.keyword}" | Monthly searches: ${art.volume}
+Write genuinely helpful, expert-level content. Naturally include the keyword. No fluff. UK/International gambling context.`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    generated[id]={type:'blog',art,content:parsed,html:buildBlogHtml(art,parsed)};
+    const wc=parsed.wordCount||1200;
+    const cur=parseInt(document.getElementById('b-words').textContent.replace(/,/g,'')||0);
+    document.getElementById('b-words').textContent=(cur+wc).toLocaleString();
+    const done=parseInt(document.getElementById('b-done').textContent)+1;
+    document.getElementById('b-done').textContent=done;
+    document.getElementById('blog-prog').textContent=`${done} / ${BLOG_ARTICLES.length}`;
+    document.getElementById('b-kw').textContent=done;
+    setCardState(id,'done',`~${wc} words`);
+  } catch(e){setCardState(id,'error','API error — retry');}
+}
+
+// ═══════════ GENERATE COUNTRY ═══════════
+async function genCountry(id){
+  const co=COUNTRIES.find(c=>c.id===id);
+  setCardState(id,'loading','Claude writing...');
+  const prompt=`Write a geo-targeted landing page for a betting affiliate site called BetWise targeting ${co.name}. Return ONLY valid JSON (no markdown):
+{
+  "metaTitle": "Best Betting Sites ${co.name} 2026 — max 60 chars",
+  "metaDesc": "Meta description max 155 chars mentioning ${co.name}",
+  "heroText": "2 sentences introducing best betting sites for ${co.name} players",
+  "legalSection": "150+ words about online betting legality and regulation in ${co.name}. Regulator: ${co.regulator}. Legal status: ${co.legal}. Notes: ${co.notes}",
+  "taxSection": "80+ words about whether betting winnings are taxed in ${co.name}",
+  "paymentSection": "100+ words about popular payment methods for ${co.name} bettors (mention local methods like ${co.currency} payments, local banks, e-wallets popular in that country)",
+  "topSites": ["${co.sites.split(', ').join('","')}"],
+  "whyTheseSites": "100+ words explaining why these specific operators are the best choice for ${co.name} players — mention licensing, local currency support, language, local payment methods",
+  "responsibleGambling": "80 words about responsible gambling resources specific to ${co.name}",
+  "faqs": [
+    {"q": "Is online betting legal in ${co.name}?", "a": "Detailed 60-word answer about ${co.name} gambling law"},
+    {"q": "What is the best betting site in ${co.name} in 2026?", "a": "50-word answer mentioning top sites"},
+    {"q": "Can I bet in ${co.currency}?", "a": "50-word answer about currency options"}
+  ]
+}`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.find(b=>b.type==='text')?.text||'';
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    generated[id]={type:'country',co,content:parsed,html:buildCountryHtml(co,parsed)};
+    const done=parseInt(document.getElementById('c-done').textContent)+1;
+    document.getElementById('c-done').textContent=done;
+    document.getElementById('country-prog').textContent=`${done} / ${COUNTRIES.length}`;
+    const wc=700;
+    const cur=parseInt(document.getElementById('c-words').textContent.replace(/,/g,'')||0);
+    document.getElementById('c-words').textContent=(cur+wc).toLocaleString();
+    setCardState(id,'done','Page ready');
+  } catch(e){setCardState(id,'error','API error — retry');}
+}
+
+// ═══════════ GEN ALL ═══════════
+async function genAllBlog(){
+  const btn=document.getElementById('btn-blog-all');
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  for(const a of BLOG_ARTICLES){
+    if(!generated[a.id]){ await genBlog(a.id); await new Promise(r=>setTimeout(r,600)); }
+  }
+  btn.textContent='✅ All Done'; btn.style.background='#15803d';
+}
+async function genAllCountry(){
+  const btn=document.getElementById('btn-country-all');
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  for(const c of COUNTRIES){
+    if(!generated[c.id]){ await genCountry(c.id); await new Promise(r=>setTimeout(r,600)); }
+  }
+  btn.textContent='✅ All Done'; btn.style.background='#15803d';
+}
+
+// ═══════════ BUILD BLOG HTML ═══════════
+function buildBlogHtml(art,c){
+  const schema=JSON.stringify({"@context":"https://schema.org","@graph":[
+    {"@type":"Article","headline":c.metaTitle,"author":{"@type":"Organization","name":"BetWise Editorial Team"},"publisher":{"@type":"Organization","name":"BetWise"},"datePublished":"2026-05-06","dateModified":"2026-05-06","description":c.metaDesc},
+    {"@type":"FAQPage","mainEntity":c.faqs.map(f=>({"@type":"Question","name":f.q,"acceptedAnswer":{"@type":"Answer","text":f.a}}))}
+  ]});
+  return `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${c.metaTitle}</title>
+<meta name="description" content="${c.metaDesc}">
+<link rel="canonical" href="https://betwise.com/blog/${art.slug}/">
+<script type="application/ld+json">${schema}<\/script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a2e;background:#f7f8fa;line-height:1.7}.wrap{max-width:780px;margin:0 auto;padding:40px 20px 80px}h1{font-size:30px;font-weight:800;color:#111827;margin-bottom:12px;letter-spacing:-.5px}h2{font-size:20px;font-weight:700;color:#111827;margin:32px 0 10px}p{font-size:15px;color:#374151;margin-bottom:14px}.meta{font-size:13px;color:#9ca3af;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #e5e7eb}.pill{display:inline-block;background:#dcfce7;color:#15803d;font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;margin-bottom:14px}.faq-item{border-bottom:1px solid #f3f4f6;padding:14px 0}.faq-q{font-size:15px;font-weight:700;color:#111827;margin-bottom:6px}.faq-a{font-size:14px;color:#6b7280;line-height:1.7}.cta-box{background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:22px;text-align:center;margin:32px 0}.cta-box h3{font-size:18px;font-weight:700;color:#14532d;margin-bottom:8px}.cta-btn{background:#16a34a;color:#fff;border:none;padding:12px 28px;border-radius:9px;font-size:15px;font-weight:700;cursor:pointer}.resp{background:#111827;color:#9ca3af;padding:20px;text-align:center;font-size:13px;margin-top:48px;border-radius:10px}</style>
+</head><body><div class="wrap">
+<div class="pill">🎯 ${art.keyword}</div>
+<h1>${art.title}</h1>
+<div class="meta">By BetWise Editorial Team · Updated May 6, 2026 · ${c.wordCount||1200} words</div>
+<p>${c.intro}</p>
+${c.sections.map(s=>`<h2>${s.h2}</h2><p>${s.body}</p>`).join('')}
+<div class="cta-box"><h3>Ready to find your perfect betting site?</h3><p style="font-size:14px;color:#166534;margin-bottom:14px">Compare all top-rated operators on BetWise — licensed sites, verified bonuses, updated daily.</p><button class="cta-btn" onclick="location.href='/'">Compare All Betting Sites →</button></div>
+<h2>Frequently Asked Questions</h2>
+${c.faqs.map(f=>`<div class="faq-item"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`).join('')}
+<p style="margin-top:24px">${c.conclusion}</p>
+<div class="resp">18+ · Gamble Responsibly · BeGambleAware.org · BetWise is an affiliate site — <a href="/affiliate-disclosure/" style="color:#4ade80">full disclosure</a></div>
+</div></body></html>`;
+}
+
+// ═══════════ BUILD COUNTRY HTML ═══════════
+function buildCountryHtml(co,c){
+  const legalColor=co.legal===true?'#16a34a':co.legal==='grey'?'#b45309':'#dc2626';
+  const legalLabel=co.legal===true?'✅ Legal & Regulated':co.legal==='grey'?'⚠️ Grey Market — Offshore Sites Only':'❌ Restricted';
+  const schema=JSON.stringify({"@context":"https://schema.org","@graph":[
+    {"@type":"WebPage","name":c.metaTitle,"description":c.metaDesc,"url":`https://betwise.com/betting-sites/${co.slug}/`},
+    {"@type":"FAQPage","mainEntity":c.faqs.map(f=>({"@type":"Question","name":f.q,"acceptedAnswer":{"@type":"Answer","text":f.a}}))}
+  ]});
+  const siteCards=c.topSites.map((s,i)=>`<div style="background:#fff;border-radius:10px;border:1.5px solid #e5e7eb;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px"><div style="font-size:16px;font-weight:700;color:#111827">${i===0?'🥇':i===1?'🥈':'🥉'} ${s}</div><div><div style="font-size:12px;color:#6b7280">Licensed · ${co.currency} accepted</div></div><button style="background:#16a34a;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Claim Bonus →</button></div>`).join('');
+  return `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${c.metaTitle}</title>
+<meta name="description" content="${c.metaDesc}">
+<link rel="canonical" href="https://betwise.com/betting-sites/${co.slug}/">
+<script type="application/ld+json">${schema}<\/script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,sans-serif;color:#1a1a2e;background:#f7f8fa;line-height:1.7}.wrap{max-width:900px;margin:0 auto;padding:40px 20px 80px}h1{font-size:30px;font-weight:800;color:#111827;margin-bottom:10px}h2{font-size:20px;font-weight:700;color:#111827;margin:32px 0 10px}p{font-size:15px;color:#374151;margin-bottom:12px}.hero{background:#fff;border-radius:14px;border:1.5px solid #e5e7eb;padding:28px;margin-bottom:24px}.legal-badge{display:inline-block;background:${legalColor}18;color:${legalColor};font-size:13px;font-weight:700;padding:5px 16px;border-radius:20px;margin-bottom:14px}.info-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 20px;margin:16px 0 20px;font-size:14px;color:#166534}.sites-list{display:flex;flex-direction:column;gap:10px;margin:16px 0 24px}.faq-item{border-bottom:1px solid #f3f4f6;padding:12px 0}.faq-q{font-size:15px;font-weight:700;color:#111827;margin-bottom:5px}.faq-a{font-size:14px;color:#6b7280}.resp{background:#111827;color:#9ca3af;padding:18px;text-align:center;font-size:13px;margin-top:40px;border-radius:10px}</style>
+</head><body><div class="wrap">
+<div class="hero">
+<div class="legal-badge">${legalLabel}</div>
+<h1>${co.flag} Best Betting Sites in ${co.name} 2026</h1>
+<p>${c.heroText}</p>
+<div class="info-box">🏛️ <strong>Regulator:</strong> ${co.regulator} &nbsp;·&nbsp; 💰 <strong>Currency:</strong> ${co.currency} &nbsp;·&nbsp; ⚖️ <strong>Legal Status:</strong> ${co.legal===true?'Fully regulated':co.legal==='grey'?'Grey market':'Restricted'}</div>
+</div>
+<h2>Top Betting Sites for ${co.name} Players</h2>
+<p>${c.whyTheseSites}</p>
+<div class="sites-list">${siteCards}</div>
+<h2>Is Online Betting Legal in ${co.name}?</h2>
+<p>${c.legalSection}</p>
+<h2>Taxes on Betting Winnings in ${co.name}</h2>
+<p>${c.taxSection}</p>
+<h2>Payment Methods in ${co.name}</h2>
+<p>${c.paymentSection}</p>
+<h2>Responsible Gambling in ${co.name}</h2>
+<p>${c.responsibleGambling}</p>
+<h2>Frequently Asked Questions</h2>
+${c.faqs.map(f=>`<div class="faq-item"><div class="faq-q">${f.q}</div><div class="faq-a">${f.a}</div></div>`).join('')}
+<div class="resp">18+ · Gamble Responsibly · Affiliate disclosure: <a href="/affiliate-disclosure/" style="color:#4ade80">BetWise earns commission via links</a></div>
+</div></body></html>`;
+}
+
+// ═══════════ PREVIEW ═══════════
+let curPreview=null;
+function preview(id){
+  const g=generated[id]; if(!g) return;
+  curPreview=id;
+  document.getElementById('modal-title').textContent=g.type==='blog'?g.art.title:`${g.co.flag} ${g.co.name} — Country Page`;
+  if(g.type==='blog'){
+    document.getElementById('modal-body').innerHTML=`
+      <div style="background:#dcfce7;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#166534">
+        <strong>Meta Title:</strong> ${g.content.metaTitle}<br><strong>Meta Desc:</strong> ${g.content.metaDesc}
+      </div>
+      <p><strong>Keyword:</strong> ${g.art.keyword} (${g.art.volume})</p>
+      <h2>Intro</h2><p>${g.content.intro}</p>
+      ${g.content.sections.map(s=>`<h2>${s.h2}</h2><p>${s.body}</p>`).join('')}
+      <h2>FAQs</h2>${g.content.faqs.map(f=>`<div class="faq-item" style="border-bottom:1px solid #f3f4f6;padding:10px 0"><div style="font-weight:700;font-size:14px">${f.q}</div><div style="font-size:13px;color:#6b7280;margin-top:4px">${f.a}</div></div>`).join('')}
+      <h2>Conclusion</h2><p>${g.content.conclusion}</p>`;
+  } else {
+    document.getElementById('modal-body').innerHTML=`
+      <div style="background:#dcfce7;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#166534">
+        <strong>Meta Title:</strong> ${g.content.metaTitle}<br><strong>Meta Desc:</strong> ${g.content.metaDesc}
+      </div>
+      <h2>Legal Status</h2><p>${g.content.legalSection}</p>
+      <h2>Top Sites</h2><p>${g.content.topSites?.join(', ')}</p>
+      <h2>Why These Sites</h2><p>${g.content.whyTheseSites}</p>
+      <h2>Payments</h2><p>${g.content.paymentSection}</p>
+      <h2>Tax</h2><p>${g.content.taxSection}</p>
+      <h2>FAQs</h2>${g.content.faqs.map(f=>`<div style="border-bottom:1px solid #f3f4f6;padding:10px 0"><div style="font-weight:700;font-size:14px">${f.q}</div><div style="font-size:13px;color:#6b7280;margin-top:4px">${f.a}</div></div>`).join('')}`;
+  }
+  document.getElementById('btn-modal-dl').onclick=()=>dlPage(id);
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function dlPage(id){
+  const g=generated[id]; if(!g) return;
+  const fname=g.type==='blog'?`${g.art.slug}.html`:`betting-sites-${g.co.slug}.html`;
+  const blob=new Blob([g.html],{type:'text/html'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; a.click();
+}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+// INIT
+renderBlogCards();
+renderCountryCards();
+</script>
+</body>
+</html>
