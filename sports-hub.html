@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fotboll & NFL — Live Odds, Stats, Transfers & Community | Puntroo</title>
+<meta name="description" content="Live odds för fotboll och NFL, ligatabeller, transferrykten, skador och fan community. Följ din klubb på Puntroo.">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;line-height:1.6}
+a{text-decoration:none;color:#4ade80}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#1e293b}
+::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
+
+/* NAV */
+nav{background:#1e293b;border-bottom:1px solid #334155;padding:0 16px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.nav-i{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:12px;height:54px}
+.logo{font-size:19px;font-weight:800;color:#fff;margin-right:8px;white-space:nowrap}.logo em{color:#4ade80;font-style:normal}
+.nav-tabs{display:flex;gap:4px;flex:1;overflow-x:auto}
+.ntab{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#94a3b8;border:none;background:transparent;white-space:nowrap;transition:all .15s}
+.ntab.active,.ntab:hover{background:#334155;color:#fff}
+.live-ind{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#4ade80;white-space:nowrap}
+.ldot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.back-btn{font-size:13px;color:#4ade80;white-space:nowrap}
+
+/* STATUS BAR */
+.status-bar{background:#0d1f0d;border-bottom:1px solid #1a3a1a;padding:6px 16px;font-size:11.5px;color:#4ade80;display:flex;align-items:center;gap:8px}
+.spin{width:12px;height:12px;border:1.5px solid #1a3a1a;border-top-color:#4ade80;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PAGE PANELS */
+.panel{display:none;max-width:1400px;margin:0 auto;padding:16px}
+.panel.active{display:block}
+
+/* SPORT PILLS */
+.sport-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.sp{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #334155;background:#1e293b;color:#94a3b8;transition:all .15s;white-space:nowrap}
+.sp.active,.sp:hover{border-color:#4ade80;color:#4ade80;background:#0d1f0d}
+
+/* LAYOUT */
+.main-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+.wide-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr}.wide-grid{grid-template-columns:1fr}}
+
+/* CARDS */
+.card{background:#1e293b;border-radius:14px;border:1px solid #334155;overflow:hidden;margin-bottom:16px}
+.card-h{padding:14px 18px;border-bottom:1px solid #334155;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-title{font-size:14px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.badge{font-size:10px;background:#4ade8020;color:#4ade80;padding:2px 9px;border-radius:10px;font-weight:700;border:1px solid #4ade8033}
+.badge-red{background:#f8717120;color:#f87171;border-color:#f8717133}
+.badge-yellow{background:#fbbf2420;color:#fbbf24;border-color:#fbbf2433}
+.card-sub{font-size:11.5px;color:#64748b}
+.loading-state{padding:28px;text-align:center;color:#64748b;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* ODDS SECTION */
+.odds-sport-header{padding:10px 18px;background:#334155;font-size:12px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:8px}
+.odds-match-row{padding:12px 18px;border-bottom:1px solid #0f172a;display:flex;align-items:center;gap:12px;transition:background .15s}
+.odds-match-row:hover{background:#334155}
+.odds-match-row:last-child{border-bottom:none}
+.match-time{font-size:11px;color:#4ade80;font-weight:700;width:50px;flex-shrink:0}
+.match-teams{flex:1}
+.match-home{font-size:13.5px;font-weight:600;color:#fff}
+.match-away{font-size:13.5px;color:#94a3b8}
+.match-league{font-size:11px;color:#64748b;margin-top:1px}
+.odds-btns{display:flex;gap:6px;flex-shrink:0}
+.odd-btn{background:#334155;color:#e2e8f0;border:1px solid #475569;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;min-width:52px;text-align:center}
+.odd-btn:hover{background:#4ade80;color:#0f172a;border-color:#4ade80}
+.odd-btn.best{background:#0d1f0d;color:#4ade80;border-color:#4ade8066}
+.odd-label{font-size:9px;color:#64748b;display:block;margin-top:1px}
+
+/* TRANSFER / INJURY */
+.item-row{padding:12px 18px;border-bottom:1px solid #0f172a;display:flex;align-items:center;gap:12px;transition:background .15s}
+.item-row:hover{background:#334155}
+.item-row:last-child{border-bottom:none}
+.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.avatar-sq{border-radius:8px}
+.item-info{flex:1;min-width:0}
+.item-name{font-size:14px;font-weight:700;color:#fff}
+.item-sub{font-size:12px;color:#94a3b8;margin-top:2px}
+.item-detail{font-size:11.5px;color:#64748b;margin-top:2px}
+.prob{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.ph{background:#4ade8020;color:#4ade80;border:1px solid #4ade8033}
+.pm{background:#fbbf2420;color:#fbbf24;border:1px solid #fbbf2433}
+.pl{background:#f8717120;color:#f87171;border:1px solid #f8717133}
+
+/* STATS TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:9px 12px;text-align:left;font-size:10.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #334155;white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid #1e293b;color:#e2e8f0;white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#334155}
+.tbl .pos{color:#64748b;font-size:12px}
+.tbl .club-name{font-weight:600;color:#fff}
+.tbl .pts{font-weight:800;color:#4ade80}
+.tbl .gd{color:#4ade80}
+.form-dots{display:flex;gap:3px;align-items:center}
+.fd{width:8px;height:8px;border-radius:50%}
+.fw{background:#4ade80}.fd-d{background:#fbbf24}.fl{background:#f87171}
+.scorer-rank{color:#64748b;font-size:12px}
+.scorer-name{font-weight:600;color:#fff}
+.scorer-goals{font-weight:800;color:#4ade80}
+
+/* COMMUNITY */
+.club-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;padding:16px}
+.club-card{background:#334155;border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;border:1.5px solid transparent;transition:all .2s}
+.club-card:hover{border-color:#4ade8055}
+.club-card.following{border-color:#4ade80;background:#0d1f0d}
+.club-em{font-size:26px;margin-bottom:6px}
+.club-nm{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px}
+.club-fol{font-size:11px;color:#64748b;margin-bottom:8px}
+.fol-btn{width:100%;padding:5px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.fol-btn.follow{background:#4ade80;color:#0f172a}
+.fol-btn.unfollow{background:#334155;color:#94a3b8;border:1px solid #475569}
+
+/* FEED */
+.post-box{padding:14px 18px;border-bottom:1px solid #334155}
+.post-ta{width:100%;background:#334155;border:1.5px solid #475569;border-radius:10px;padding:10px 14px;font-size:14px;color:#e2e8f0;resize:none;font-family:inherit;transition:border-color .2s}
+.post-ta:focus{outline:none;border-color:#4ade80}
+.post-ta::placeholder{color:#64748b}
+.post-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
+.post-sel{background:#334155;border:1px solid #475569;border-radius:8px;padding:6px 12px;font-size:12px;color:#e2e8f0;cursor:pointer;flex:1}
+.post-submit{background:#4ade80;color:#0f172a;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.feed-item{padding:14px 18px;border-bottom:1px solid #1e293b}
+.feed-item:last-child{border-bottom:none}
+.feed-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.feed-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.feed-user{font-size:13px;font-weight:700;color:#fff}
+.feed-club-tag{font-size:11px;color:#4ade80}
+.feed-time{font-size:11px;color:#64748b;margin-left:auto}
+.feed-body{font-size:14px;color:#cbd5e1;line-height:1.55}
+.feed-acts{display:flex;gap:16px;margin-top:8px}
+.feed-act{font-size:12px;color:#64748b;cursor:pointer;transition:color .15s}
+.feed-act:hover{color:#4ade80}
+
+/* SIDEBAR */
+.sb-card{background:#1e293b;border-radius:14px;border:1px solid #334155;overflow:hidden;margin-bottom:16px}
+.sb-h{padding:12px 16px;border-bottom:1px solid #334155;font-size:13px;font-weight:700;color:#fff}
+.trend-item{padding:10px 16px;border-bottom:1px solid #1e293b;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s}
+.trend-item:hover{background:#334155}
+.trend-item:last-child{border-bottom:none}
+.trend-num{font-size:16px;font-weight:800;color:#334155;width:20px;text-align:center;flex-shrink:0}
+.trend-name{font-size:13px;font-weight:700;color:#fff}
+.trend-count{font-size:11px;color:#64748b}
+.mini-odd-row{padding:9px 16px;border-bottom:1px solid #1e293b;display:flex;align-items:center;justify-content:space-between;font-size:13px}
+.mini-odd-row:last-child{border-bottom:none}
+.mini-match{color:#94a3b8;flex:1;font-size:12.5px}
+.mini-odd{background:#334155;color:#4ade80;font-weight:700;padding:3px 10px;border-radius:6px;font-size:12px;cursor:pointer}
+.mini-odd:hover{background:#4ade80;color:#0f172a}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <div class="spin" id="mainSpin"></div>
+  <span id="statusText">Connecting to live sports data...</span>
+</div>
+
+<nav>
+  <div class="nav-i">
+    <div class="logo">Puntr<em>oo</em></div>
+    <div class="nav-tabs">
+      <button class="ntab active" onclick="switchPanel('odds',this)">📈 Live Odds</button>
+      <button class="ntab" onclick="switchPanel('transfers',this)">🔄 Transfers</button>
+      <button class="ntab" onclick="switchPanel('injuries',this)">🏥 Injuries</button>
+      <button class="ntab" onclick="switchPanel('stats',this)">📊 Stats & Tables</button>
+      <button class="ntab" onclick="switchPanel('community',this)">👥 Community</button>
+    </div>
+    <div class="live-ind"><div class="ldot"></div>LIVE</div>
+    <a href="/" class="back-btn">← Puntroo.com</a>
+  </div>
+</nav>
+
+<!-- ═══════════ ODDS PANEL ═══════════ -->
+<div class="panel active" id="panel-odds">
+  <div class="sport-pills">
+    <div class="sp active" onclick="setSport('football',this)">⚽ Football</div>
+    <div class="sp" onclick="setSport('basketball',this)">🏀 Basketball</div>
+    <div class="sp" onclick="setSport('tennis',this)">🎾 Tennis</div>
+    <div class="sp" onclick="setSport('mma',this)">🥊 MMA</div>
+    <div class="sp" onclick="setSport('cricket',this)">🏏 Cricket</div>
+    <div class="sp" onclick="setSport('rugby',this)">🏉 Rugby</div>
+    <div class="sp" onclick="setSport('hockey',this)">🏒 Ice Hockey</div>
+    <div class="sp" onclick="setSport('baseball',this)">⚾ Baseball</div>
+    <div class="sp" onclick="setSport('golf',this)">⛳ Golf</div>
+    <div class="sp" onclick="setSport('esports',this)">🎮 Esports</div>
+    <div class="sp" onclick="setSport('american_football',this)">🏈 NFL</div>
+  </div>
+  <div class="main-grid">
+    <div>
+      <div class="card" id="oddsCard">
+        <div class="card-h">
+          <div class="card-title" id="oddsTitle">⚽ Football — Live Odds</div>
+          <div class="badge" id="oddsBadge">Loading...</div>
+        </div>
+        <div id="oddsList"><div class="loading-state"><div class="spin"></div>Fetching live odds...</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sb-card">
+        <div class="sb-h">🔥 Trending Bets</div>
+        <div id="trendingOdds"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">⭐ Best Value Today</div>
+        <div id="bestValue"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">📰 Latest Betting News</div>
+        <div id="bettingNews"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ TRANSFERS PANEL ═══════════ -->
+<div class="panel" id="panel-transfers">
+  <div class="sport-pills">
+    <div class="sp active" onclick="setTransferSport('football',this)">⚽ Football</div>
+    <div class="sp" onclick="setTransferSport('basketball',this)">🏀 Basketball</div>
+    <div class="sp" onclick="setTransferSport('hockey',this)">🏒 Hockey</div>
+    <div class="sp" onclick="setTransferSport('cricket',this)">🏏 Cricket</div>
+    <div class="sp" onclick="setTransferSport('esports',this)">🎮 Esports</div>
+  </div>
+  <div class="main-grid">
+    <div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">🔄 Player Transfer Rumours</div>
+          <div id="transferUpdated" class="card-sub">Updating...</div>
+        </div>
+        <div id="transferList"><div class="loading-state"><div class="spin"></div>AI fetching latest rumours...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">👔 Manager & Coach Rumours</div>
+          <div class="badge">LIVE</div>
+        </div>
+        <div id="managerList"><div class="loading-state"><div class="spin"></div>Fetching manager news...</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sb-card">
+        <div class="sb-h">🔥 Transfer Trending</div>
+        <div id="transferTrending"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">✅ Confirmed Deals</div>
+        <div id="confirmedDeals"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ INJURIES PANEL ═══════════ -->
+<div class="panel" id="panel-injuries">
+  <div class="sport-pills">
+    <div class="sp active" onclick="setInjurySport('football',this)">⚽ Football</div>
+    <div class="sp" onclick="setInjurySport('basketball',this)">🏀 Basketball</div>
+    <div class="sp" onclick="setInjurySport('rugby',this)">🏉 Rugby</div>
+    <div class="sp" onclick="setInjurySport('hockey',this)">🏒 Hockey</div>
+    <div class="sp" onclick="setInjurySport('cricket',this)">🏏 Cricket</div>
+  </div>
+  <div class="wide-grid">
+    <div class="card">
+      <div class="card-h">
+        <div class="card-title">🔴 Confirmed Out</div>
+        <div id="injOutCount" class="badge badge-red">0 players</div>
+      </div>
+      <div id="injOut"><div class="loading-state"><div class="spin"></div>Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h">
+        <div class="card-title">🟡 Doubtful</div>
+        <div id="injDoubtCount" class="badge badge-yellow">0 players</div>
+      </div>
+      <div id="injDoubt"><div class="loading-state"><div class="spin"></div>Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h">
+        <div class="card-title">🟢 Returning Soon</div>
+        <div class="badge">RETURN</div>
+      </div>
+      <div id="injReturn"><div class="loading-state"><div class="spin"></div>Loading...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h">
+        <div class="card-title">📋 Suspensions</div>
+        <div class="badge">BANNED</div>
+      </div>
+      <div id="injSuspended"><div class="loading-state"><div class="spin"></div>Loading...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STATS PANEL ═══════════ -->
+<div class="panel" id="panel-stats">
+  <div class="sport-pills">
+    <div class="sp active" onclick="setStatsSport('premier_league',this)">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</div>
+    <div class="sp" onclick="setStatsSport('la_liga',this)">🇪🇸 La Liga</div>
+    <div class="sp" onclick="setStatsSport('bundesliga',this)">🇩🇪 Bundesliga</div>
+    <div class="sp" onclick="setStatsSport('serie_a',this)">🇮🇹 Serie A</div>
+    <div class="sp" onclick="setStatsSport('ligue_1',this)">🇫🇷 Ligue 1</div>
+    <div class="sp" onclick="setStatsSport('allsvenskan',this)">🇸🇪 Allsvenskan</div>
+    <div class="sp" onclick="setStatsSport('nba',this)">🏀 NBA</div>
+    <div class="sp" onclick="setStatsSport('nfl',this)">🏈 NFL</div>
+    <div class="sp" onclick="setStatsSport('champions_league',this)">🏆 Champions League</div>
+  </div>
+  <div class="main-grid">
+    <div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title" id="statsTitle">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League Table 2025/26</div>
+          <div class="card-sub" id="statsUpdated">Updating...</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th><th>Form</th>
+              </tr>
+            </thead>
+            <tbody id="leagueTable">
+              <tr><td colspan="11"><div class="loading-state"><div class="spin"></div>Loading table...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="sb-card">
+        <div class="sb-h">⚽ Top Scorers</div>
+        <div id="topScorers"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">🎯 Top Assisters</div>
+        <div id="topAssists"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">🧤 Best Goalkeepers</div>
+        <div id="topKeepers"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ COMMUNITY PANEL ═══════════ -->
+<div class="panel" id="panel-community">
+  <div class="main-grid">
+    <div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">👥 Follow Your Club</div>
+          <div class="card-sub" id="followCount">0 clubs followed</div>
+        </div>
+        <div class="club-grid" id="clubGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-h">
+          <div class="card-title">💬 Fan Community Feed</div>
+          <div class="badge" id="feedCount">0 posts</div>
+        </div>
+        <div class="post-box">
+          <textarea class="post-ta" id="postInput" rows="2" placeholder="Share predictions, transfer news, match thoughts..."></textarea>
+          <div class="post-foot">
+            <select class="post-sel" id="postClub"><option value="">⚽ Select club</option></select>
+            <button class="post-submit" onclick="submitPost()">Post</button>
+          </div>
+        </div>
+        <div id="communityFeed"></div>
+      </div>
+    </div>
+    <div>
+      <div class="sb-card">
+        <div class="sb-h">🔥 Most Active Clubs</div>
+        <div id="activeClubs"></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-h">💬 AI Match Predictor</div>
+        <div style="padding:16px">
+          <select id="predHome" style="width:100%;background:#334155;border:1px solid #475569;border-radius:8px;padding:8px;font-size:13px;color:#e2e8f0;margin-bottom:8px;cursor:pointer">
+            <option>Select home team</option>
+          </select>
+          <select id="predAway" style="width:100%;background:#334155;border:1px solid #475569;border-radius:8px;padding:8px;font-size:13px;color:#e2e8f0;margin-bottom:10px;cursor:pointer">
+            <option>Select away team</option>
+          </select>
+          <button onclick="predictMatch()" style="width:100%;background:#4ade80;color:#0f172a;border:none;padding:10px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">🤖 Get AI Prediction</button>
+          <div id="predResult" style="margin-top:12px;font-size:13px;color:#94a3b8;line-height:1.6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ STATE ═══
+let activeSportOdds='football', activeTransferSport='football', activeInjurySport='football', activeStatsSport='premier_league';
+let following = JSON.parse(localStorage.getItem('p_following')||'[]');
+let posts = JSON.parse(localStorage.getItem('p_posts')||'[]');
+let likes = JSON.parse(localStorage.getItem('p_likes')||'{}');
+
+const CLUBS=[
+  // 🏴󠁧󠁢󠁥󠁮󠁧󠁿 PREMIER LEAGUE (20 lag)
+  {id:'manu',n:'Man United',e:'🔴',l:'Premier League'},{id:'mci',n:'Man City',e:'🔵',l:'Premier League'},
+  {id:'ars',n:'Arsenal',e:'🔴',l:'Premier League'},{id:'liv',n:'Liverpool',e:'🔴',l:'Premier League'},
+  {id:'che',n:'Chelsea',e:'🔵',l:'Premier League'},{id:'tot',n:'Spurs',e:'⚪',l:'Premier League'},
+  {id:'new',n:'Newcastle',e:'⚫⚪',l:'Premier League'},{id:'avl',n:'Aston Villa',e:'🟣',l:'Premier League'},
+  {id:'whu',n:'West Ham',e:'🔵🟣',l:'Premier League'},{id:'bha',n:'Brighton',e:'🔵⚪',l:'Premier League'},
+  {id:'wol',n:'Wolves',e:'🟠⚫',l:'Premier League'},{id:'cry',n:'Crystal Palace',e:'🔴🔵',l:'Premier League'},
+  {id:'ful',n:'Fulham',e:'⚪⚫',l:'Premier League'},{id:'bre',n:'Brentford',e:'🔴⚪',l:'Premier League'},
+  {id:'eve',n:'Everton',e:'🔵',l:'Premier League'},{id:'nfo',n:'Nottm Forest',e:'🔴',l:'Premier League'},
+  {id:'bou',n:'Bournemouth',e:'🔴⚫',l:'Premier League'},{id:'lei',n:'Leicester',e:'🔵',l:'Premier League'},
+  {id:'ips',n:'Ipswich',e:'🔵⚪',l:'Premier League'},{id:'sou',n:'Southampton',e:'🔴⚪',l:'Premier League'},
+
+  // 🇪🇸 LA LIGA (20 lag)
+  {id:'rma',n:'Real Madrid',e:'👑',l:'La Liga'},{id:'bar',n:'Barcelona',e:'🔵🔴',l:'La Liga'},
+  {id:'atm',n:'Atlético Madrid',e:'🔴⚪',l:'La Liga'},{id:'sev',n:'Sevilla',e:'⚪🔴',l:'La Liga'},
+  {id:'vil',n:'Villarreal',e:'🟡',l:'La Liga'},{id:'rso',n:'Real Sociedad',e:'🔵⚪',l:'La Liga'},
+  {id:'ath',n:'Athletic Bilbao',e:'🔴⚪',l:'La Liga'},{id:'bet',n:'Real Betis',e:'🟢⚪',l:'La Liga'},
+  {id:'cel',n:'Celta Vigo',e:'🔵⚪',l:'La Liga'},{id:'val',n:'Valencia',e:'⚪⚫',l:'La Liga'},
+  {id:'osa',n:'Osasuna',e:'🔴🔵',l:'La Liga'},{id:'get',n:'Getafe',e:'🔵',l:'La Liga'},
+  {id:'ray',n:'Rayo Vallecano',e:'🔴⚪',l:'La Liga'},{id:'ala',n:'Alavés',e:'🔵⚪',l:'La Liga'},
+  {id:'mall',n:'Mallorca',e:'🔴⚫',l:'La Liga'},{id:'gir',n:'Girona',e:'🔴⚪',l:'La Liga'},
+  {id:'esp',n:'Espanyol',e:'🔵⚪',l:'La Liga'},{id:'las',n:'Las Palmas',e:'🟡🔵',l:'La Liga'},
+  {id:'leg',n:'Leganés',e:'🔵⚪',l:'La Liga'},{id:'vll',n:'Valladolid',e:'🟣',l:'La Liga'},
+
+  // 🇩🇪 BUNDESLIGA (18 lag)
+  {id:'bay',n:'Bayern München',e:'🔴',l:'Bundesliga'},{id:'bvb',n:'Borussia Dortmund',e:'🟡⚫',l:'Bundesliga'},
+  {id:'b04',n:'Bayer Leverkusen',e:'🔴⚫',l:'Bundesliga'},{id:'rbl',n:'RB Leipzig',e:'🔴⚪',l:'Bundesliga'},
+  {id:'bmo',n:'B. Mönchengladbach',e:'🟢⚪',l:'Bundesliga'},{id:'fra',n:'Eintracht Frankfurt',e:'🔴⚫',l:'Bundesliga'},
+  {id:'wol2',n:'VfL Wolfsburg',e:'🟢⚪',l:'Bundesliga'},{id:'stu',n:'VfB Stuttgart',e:'🔴⚪',l:'Bundesliga'},
+  {id:'sch',n:'Schalke 04',e:'🔵⚪',l:'Bundesliga'},{id:'her',n:'Hertha BSC',e:'🔵⚪',l:'Bundesliga'},
+  {id:'hof',n:'Hoffenheim',e:'🔵⚪',l:'Bundesliga'},{id:'aug',n:'FC Augsburg',e:'🔴🟢',l:'Bundesliga'},
+  {id:'mai',n:'Mainz 05',e:'🔴⚪',l:'Bundesliga'},{id:'fre',n:'SC Freiburg',e:'🔴⚫',l:'Bundesliga'},
+  {id:'bre2',n:'Werder Bremen',e:'🟢⚪',l:'Bundesliga'},{id:'boc',n:'VfL Bochum',e:'🔵⚪',l:'Bundesliga'},
+  {id:'uni',n:'Union Berlin',e:'🔴⚪',l:'Bundesliga'},{id:'hei',n:'FC Heidenheim',e:'🔴🟢',l:'Bundesliga'},
+
+  // 🇮🇹 SERIE A (20 lag)
+  {id:'juve',n:'Juventus',e:'⚫⚪',l:'Serie A'},{id:'int',n:'Inter Milan',e:'🔵⚫',l:'Serie A'},
+  {id:'acm',n:'AC Milan',e:'🔴⚫',l:'Serie A'},{id:'nap',n:'Napoli',e:'🔵',l:'Serie A'},
+  {id:'rom',n:'AS Roma',e:'🟡🔴',l:'Serie A'},{id:'laz',n:'Lazio',e:'🔵⚪',l:'Serie A'},
+  {id:'fio',n:'Fiorentina',e:'🟣',l:'Serie A'},{id:'ata',n:'Atalanta',e:'🔵⚫',l:'Serie A'},
+  {id:'tor',n:'Torino',e:'🔴',l:'Serie A'},{id:'sam',n:'Sampdoria',e:'🔵🔴',l:'Serie A'},
+  {id:'gen',n:'Genoa',e:'🔴🔵',l:'Serie A'},{id:'bol',n:'Bologna',e:'🔴🔵',l:'Serie A'},
+  {id:'sas',n:'Sassuolo',e:'🟢⚫',l:'Serie A'},{id:'udi',n:'Udinese',e:'⚫⚪',l:'Serie A'},
+  {id:'cal',n:'Cagliari',e:'🔴🔵',l:'Serie A'},{id:'emp',n:'Empoli',e:'🔵⚪',l:'Serie A'},
+  {id:'fro',n:'Frosinone',e:'🟡🔵',l:'Serie A'},{id:'ver',n:'Hellas Verona',e:'🔵🟡',l:'Serie A'},
+  {id:'mon2',n:'Monza',e:'🔴⚪',l:'Serie A'},{id:'lec',n:'Lecce',e:'🔴🟡',l:'Serie A'},
+
+  // 🇫🇷 LIGUE 1 (18 lag)
+  {id:'psg',n:'PSG',e:'🔵🔴',l:'Ligue 1'},{id:'asm',n:'Monaco',e:'🔴⚪',l:'Ligue 1'},
+  {id:'oml',n:'Olympique Lyon',e:'🔵⚪',l:'Ligue 1'},{id:'oom',n:'Marseille',e:'🔵⚪',l:'Ligue 1'},
+  {id:'lil',n:'Lille',e:'🔴⚪',l:'Ligue 1'},{id:'ren',n:'Stade Rennais',e:'🔴⚫',l:'Ligue 1'},
+  {id:'nic',n:'OGC Nice',e:'🔴⚫',l:'Ligue 1'},{id:'len',n:'RC Lens',e:'🟡🔴',l:'Ligue 1'},
+  {id:'mon3',n:'Montpellier',e:'🔵🟠',l:'Ligue 1'},{id:'nan',n:'FC Nantes',e:'🟡🟢',l:'Ligue 1'},
+  {id:'bor',n:'Bordeaux',e:'🔵⚪',l:'Ligue 1'},{id:'str',n:'RC Strasbourg',e:'🔵⚪',l:'Ligue 1'},
+  {id:'tou',n:'Toulouse',e:'🟣⚪',l:'Ligue 1'},{id:'bre3',n:'Stade Brestois',e:'🔴⚪',l:'Ligue 1'},
+  {id:'hav',n:'Le Havre',e:'🔵⚪',l:'Ligue 1'},{id:'met',n:'FC Metz',e:'🔴⚫',l:'Ligue 1'},
+  {id:'cle',n:'Clermont',e:'🔴🔵',l:'Ligue 1'},{id:'lor',n:'FC Lorient',e:'🟠⚫',l:'Ligue 1'},
+
+  // 🇵🇹 PRIMEIRA LIGA (18 lag)
+  {id:'ben',n:'Benfica',e:'🔴',l:'Primeira Liga'},{id:'por',n:'FC Porto',e:'🔵',l:'Primeira Liga'},
+  {id:'scp',n:'Sporting CP',e:'🟢⚪',l:'Primeira Liga'},{id:'bra',n:'SC Braga',e:'🔴⚪',l:'Primeira Liga'},
+  {id:'vit',n:'Vitória SC',e:'🟢⚫',l:'Primeira Liga'},{id:'gui',n:'Guimarães',e:'🟢',l:'Primeira Liga'},
+  {id:'pac',n:'Paços Ferreira',e:'🟡🔵',l:'Primeira Liga'},{id:'gil',n:'Gil Vicente',e:'🔴⚫',l:'Primeira Liga'},
+  {id:'fam',n:'Famalicão',e:'🔵⚪',l:'Primeira Liga'},{id:'mar',n:'Marítimo',e:'🔴🟢',l:'Primeira Liga'},
+
+  // 🇳🇱 EREDIVISIE (18 lag)
+  {id:'ajx',n:'Ajax',e:'🔴⚪',l:'Eredivisie'},{id:'psv',n:'PSV Eindhoven',e:'🔴⚪',l:'Eredivisie'},
+  {id:'fey',n:'Feyenoord',e:'🔴⚪',l:'Eredivisie'},{id:'aaz',n:'AZ Alkmaar',e:'🔴⚪',l:'Eredivisie'},
+  {id:'utr',n:'FC Utrecht',e:'🔴⚪',l:'Eredivisie'},{id:'twn',n:'FC Twente',e:'🔴⚪',l:'Eredivisie'},
+  {id:'vit2',n:'Vitesse',e:'🟡⚫',l:'Eredivisie'},{id:'hee',n:'SC Heerenveen',e:'🔵⚪',l:'Eredivisie'},
+  {id:'gro',n:'FC Groningen',e:'🟢⚪',l:'Eredivisie'},{id:'ems',n:'Go Ahead Eagles',e:'🔴🟡',l:'Eredivisie'},
+
+  // 🇧🇪 PRO LEAGUE (16 lag)
+  {id:'clu',n:'Club Brugge',e:'🔵⚫',l:'Pro League'},{id:'and',n:'Anderlecht',e:'🟣⚪',l:'Pro League'},
+  {id:'gen2',n:'KAA Gent',e:'🔵⚪',l:'Pro League'},{id:'sta',n:'Standard Liège',e:'🔴⚫',l:'Pro League'},
+  {id:'ant',n:'Royal Antwerp',e:'🔴⚫',l:'Pro League'},{id:'cha',n:'Charleroi',e:'⚫⚪',l:'Pro League'},
+
+  // 🇹🇷 SÜPER LIG (19 lag)
+  {id:'gal',n:'Galatasaray',e:'🟡🔴',l:'Süper Lig'},{id:'bes',n:'Beşiktaş',e:'⚫⚪',l:'Süper Lig'},
+  {id:'fen',n:'Fenerbahçe',e:'🟡🔵',l:'Süper Lig'},{id:'tra',n:'Trabzonspor',e:'🔵🟡',l:'Süper Lig'},
+  {id:'bas',n:'Başakşehir',e:'🔵🟠',l:'Süper Lig'},{id:'adana',n:'Adana Demirspor',e:'🔵🟡',l:'Süper Lig'},
+
+  // 🇬🇷 SUPER LEAGUE GREECE
+  {id:'oly',n:'Olympiakos',e:'🔴⚪',l:'Super League'},{id:'pao',n:'Panathinaikos',e:'🟢',l:'Super League'},
+  {id:'aek',n:'AEK Athens',e:'🟡⚫',l:'Super League'},{id:'paok',n:'PAOK',e:'⚫⚪',l:'Super League'},
+
+  // 🇷🇺 RPL (Russian Premier League — delvis)
+  {id:'cska',n:'CSKA Moscow',e:'🔴🔵',l:'RPL'},{id:'zen',n:'Zenit St. Petersburg',e:'🔵⚪',l:'RPL'},
+  {id:'spa',n:'Spartak Moscow',e:'🔴⚪',l:'RPL'},
+
+  // 🇸🇪 ALLSVENSKAN (16 lag)
+  {id:'aik',n:'AIK',e:'⚫🟡',l:'Allsvenskan'},{id:'mff',n:'Malmö FF',e:'🔵',l:'Allsvenskan'},
+  {id:'ifkg',n:'IFK Göteborg',e:'🔵⚪',l:'Allsvenskan'},{id:'djur',n:'Djurgården',e:'🔵',l:'Allsvenskan'},
+  {id:'ham',n:'Hammarby',e:'🟢⚪',l:'Allsvenskan'},{id:'ifkn',n:'IFK Norrköping',e:'🔵⚪',l:'Allsvenskan'},
+  {id:'elfs',n:'Elfsborg',e:'🟡⚫',l:'Allsvenskan'},{id:'kal',n:'Kalmar FF',e:'🔴⚪',l:'Allsvenskan'},
+  {id:'oreb',n:'Örebro SK',e:'⚫🟡',l:'Allsvenskan'},{id:'giff',n:'GAIS',e:'🟢⚫',l:'Allsvenskan'},
+  {id:'hac',n:'Häcken',e:'🟡⚫',l:'Allsvenskan'},{id:'vas',n:'Västerås SK',e:'🟡🔵',l:'Allsvenskan'},
+
+  // 🇳🇴 ELITESERIEN (16 lag)
+  {id:'ros',n:'Rosenborg',e:'🔵⚪',l:'Eliteserien'},{id:'bod',n:'Bodø/Glimt',e:'🟡⚫',l:'Eliteserien'},
+  {id:'mol',n:'Molde',e:'🔵',l:'Eliteserien'},{id:'vif',n:'Vålerenga',e:'🔵',l:'Eliteserien'},
+  {id:'brann',n:'SK Brann',e:'🔴',l:'Eliteserien'},{id:'vik',n:'Viking FK',e:'🔵',l:'Eliteserien'},
+
+  // 🇩🇰 SUPERLIGA (14 lag)
+  {id:'fck',n:'FC København',e:'🔵⚪',l:'Superliga'},{id:'bro',n:'Brøndby',e:'🟡🔵',l:'Superliga'},
+  {id:'mid',n:'FC Midtjylland',e:'⚪🔴',l:'Superliga'},{id:'aab',n:'AaB',e:'🔴⚪',l:'Superliga'},
+  {id:'odens',n:'Odense BK',e:'🔵⚪',l:'Superliga'},{id:'sond',n:'Sønderjyske',e:'🔵🔴',l:'Superliga'},
+
+  // 🇫🇮 VEIKKAUSLIIGA (12 lag)
+  {id:'hik',n:'HJK Helsinki',e:'🔵⚪',l:'Veikkausliiga'},{id:'inter',n:'FC Inter Turku',e:'🔵⚪',l:'Veikkausliiga'},
+  {id:'hps',n:'HIFK',e:'🔴⚫',l:'Veikkausliiga'},
+
+  // 🏀 NBA
+  {id:'lak',n:'LA Lakers',e:'🟣🟡',l:'NBA'},{id:'gsw',n:'Golden State',e:'🔵🟡',l:'NBA'},
+  {id:'bos',n:'Boston Celtics',e:'🟢',l:'NBA'},{id:'mia',n:'Miami Heat',e:'🔴',l:'NBA'},
+
+  // 🏈 NFL
+  {id:'kc',n:'Kansas City Chiefs',e:'🔴🟡',l:'NFL'},{id:'sf',n:'San Francisco 49ers',e:'🔴🟡',l:'NFL'},
+  {id:'dal',n:'Dallas Cowboys',e:'🔵⚪',l:'NFL'},{id:'gb',n:'Green Bay Packers',e:'🟢🟡',l:'NFL'},
+];
+  // 🇪🇸 La Liga
+  {id:'rma',n:'Real Madrid',e:'👑',l:'La Liga'},{id:'bar',n:'Barcelona',e:'🔵🔴',l:'La Liga'},
+  {id:'atm',n:'Atlético Madrid',e:'🔴⚪',l:'La Liga'},{id:'sev',n:'Sevilla',e:'⚪🔴',l:'La Liga'},
+  {id:'vil',n:'Villarreal',e:'🟡',l:'La Liga'},{id:'rso',n:'Real Sociedad',e:'🔵⚪',l:'La Liga'},
+  // 🇩🇪 Bundesliga
+  {id:'bay',n:'Bayern München',e:'🔴',l:'Bundesliga'},{id:'bvb',n:'Borussia Dortmund',e:'🟡⚫',l:'Bundesliga'},
+  {id:'b04',n:'Bayer Leverkusen',e:'🔴⚫',l:'Bundesliga'},{id:'rbl',n:'RB Leipzig',e:'🔴⚪',l:'Bundesliga'},
+  {id:'bmo',n:'Borussia M\'gladbach',e:'🟢⚪',l:'Bundesliga'},
+  // 🇮🇹 Serie A
+  {id:'juve',n:'Juventus',e:'⚫⚪',l:'Serie A'},{id:'int',n:'Inter Milan',e:'🔵⚫',l:'Serie A'},
+  {id:'acm',n:'AC Milan',e:'🔴⚫',l:'Serie A'},{id:'nap',n:'Napoli',e:'🔵',l:'Serie A'},
+  {id:'rom',n:'AS Roma',e:'🟡🔴',l:'Serie A'},{id:'laz',n:'Lazio',e:'🔵⚪',l:'Serie A'},
+  // 🇫🇷 Ligue 1
+  {id:'psg',n:'PSG',e:'🔵🔴',l:'Ligue 1'},{id:'asm',n:'Monaco',e:'🔴⚪',l:'Ligue 1'},
+  {id:'oml',n:'Olympique Lyon',e:'🔵⚪',l:'Ligue 1'},{id:'oom',n:'Marseille',e:'🔵⚪',l:'Ligue 1'},
+  // 🇵🇹 Primeira Liga
+  {id:'ben',n:'Benfica',e:'🔴',l:'Primeira Liga'},{id:'por',n:'FC Porto',e:'🔵',l:'Primeira Liga'},
+  {id:'scp',n:'Sporting CP',e:'🟢⚪',l:'Primeira Liga'},
+  // 🇳🇱 Eredivisie
+  {id:'ajx',n:'Ajax',e:'🔴⚪',l:'Eredivisie'},{id:'psv',n:'PSV Eindhoven',e:'🔴⚪',l:'Eredivisie'},
+  {id:'fey',n:'Feyenoord',e:'🔴⚪',l:'Eredivisie'},
+  // 🇧🇪 Pro League
+  {id:'clu',n:'Club Brugge',e:'🔵⚫',l:'Pro League'},{id:'and',n:'Anderlecht',e:'🟣⚪',l:'Pro League'},
+  // 🇹🇷 Süper Lig
+  {id:'gal',n:'Galatasaray',e:'🟡🔴',l:'Süper Lig'},{id:'bes',n:'Beşiktaş',e:'⚫⚪',l:'Süper Lig'},
+  {id:'fen',n:'Fenerbahçe',e:'🟡🔵',l:'Süper Lig'},
+  // 🇸🇪 Allsvenskan
+  {id:'aik',n:'AIK',e:'⚫🟡',l:'Allsvenskan'},{id:'mff',n:'Malmö FF',e:'🔵',l:'Allsvenskan'},
+  {id:'ifk',n:'IFK Göteborg',e:'🔵⚪',l:'Allsvenskan'},{id:'djur',n:'Djurgården',e:'🔵',l:'Allsvenskan'},
+  {id:'ham',n:'Hammarby',e:'🟢⚪',l:'Allsvenskan'},{id:'ifkn',n:'IFK Norrköping',e:'🔵⚪',l:'Allsvenskan'},
+  // 🇳🇴 Eliteserien
+  {id:'ros',n:'Rosenborg',e:'🔵⚪',l:'Eliteserien'},{id:'bod',n:'Bodø/Glimt',e:'🟡⚫',l:'Eliteserien'},
+  {id:'mol',n:'Molde',e:'🔵',l:'Eliteserien'},
+  // 🇩🇰 Superliga
+  {id:'fck',n:'FC København',e:'🔵⚪',l:'Superliga'},{id:'bro',n:'Brøndby',e:'🟡🔵',l:'Superliga'},
+  // 🏀 NBA
+  {id:'lak',n:'LA Lakers',e:'🟣🟡',l:'NBA'},{id:'gsw',n:'Golden State',e:'🔵🟡',l:'NBA'},
+  {id:'bos',n:'Boston Celtics',e:'🟢',l:'NBA'},{id:'mia',n:'Miami Heat',e:'🔴',l:'NBA'},
+];
+
+const TEAMS_FOR_PRED=['Arsenal','Aston Villa','Brentford','Brighton','Burnley','Chelsea','Crystal Palace','Everton','Fulham','Liverpool','Luton','Man City','Man United','Newcastle','Nottm Forest','Sheffield Utd','Spurs','West Ham','Wolves','Leicester'];
+
+// Populate predictor selects
+['predHome','predAway'].forEach(id=>{
+  const sel=document.getElementById(id);
+  TEAMS_FOR_PRED.forEach(t=>{const o=document.createElement('option');o.textContent=t;sel.appendChild(o);});
+});
+
+// Populate community club select
+const clubSel=document.getElementById('postClub');
+CLUBS.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.e+' '+c.n;clubSel.appendChild(o);});
+
+// ═══ PANEL SWITCH ═══
+function switchPanel(name,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+  if(name==='odds') fetchOdds();
+  if(name==='transfers') fetchTransfers();
+  if(name==='injuries') fetchInjuries();
+  if(name==='stats') fetchStats();
+  if(name==='community') renderCommunity();
+}
+
+function setSport(s,el){
+  activeSportOdds=s;
+  document.querySelectorAll('#panel-odds .sp').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  fetchOdds();
+}
+function setTransferSport(s,el){
+  activeTransferSport=s;
+  document.querySelectorAll('#panel-transfers .sp').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  fetchTransfers();
+}
+function setInjurySport(s,el){
+  activeInjurySport=s;
+  document.querySelectorAll('#panel-injuries .sp').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  fetchInjuries();
+}
+function setStatsSport(s,el){
+  activeStatsSport=s;
+  document.querySelectorAll('#panel-stats .sp').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  fetchStats();
+}
+
+function setStatus(text,spinning=true){
+  document.getElementById('statusText').textContent=text;
+  document.getElementById('mainSpin').style.display=spinning?'block':'none';
+}
+
+// ═══ CLAUDE API ═══
+async function callClaude(prompt,maxTokens=1500){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTokens,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await r.json();
+  const t=d.content?.find(b=>b.type==='text')?.text||'{}';
+  return JSON.parse(t.replace(/```json|```/g,'').trim());
+}
+
+// ═══ LIVE ODDS ═══
+async function fetchOdds(){
+  const emojis={football:'⚽',basketball:'🏀',tennis:'🎾',mma:'🥊',cricket:'🏏',rugby:'🏉',hockey:'🏒',baseball:'⚾',golf:'⛳',esports:'🎮',american_football:'🏈'};
+  document.getElementById('oddsTitle').textContent=`${emojis[activeSportOdds]||'🏅'} ${activeSportOdds.replace('_',' ').toUpperCase()} — Live Odds`;
+  document.getElementById('oddsBadge').textContent='Loading...';
+  document.getElementById('oddsList').innerHTML='<div class="loading-state"><div class="spin"></div>Fetching live odds...</div>';
+  setStatus('Fetching live odds for '+activeSportOdds+'...');
+
+  const prompt=`You are a sports odds analyst. Return ONLY valid JSON with realistic live betting odds for ${activeSportOdds} as of May 2026. Group by league/competition.
+
+{
+  "updated": "14:32 today",
+  "competitions": [
+    {
+      "name": "Premier League",
+      "matches": [
+        {
+          "time": "LIVE 67'",
+          "home": "Arsenal",
+          "away": "Chelsea",
+          "score": "1-0",
+          "home_win": "1.45",
+          "draw": "4.20",
+          "away_win": "6.50",
+          "is_live": true
+        },
+        {
+          "time": "15:00",
+          "home": "Liverpool",
+          "away": "Man City",
+          "score": null,
+          "home_win": "2.10",
+          "draw": "3.40",
+          "away_win": "3.20",
+          "is_live": false
+        }
+      ]
+    }
+  ],
+  "trending": ["Arsenal to win & BTTS @ 2.80","Mbappé First Scorer @ 4.50","Over 2.5 Goals @ 1.75"],
+  "best_value": ["Man Utd +1 Asian Handicap @ 2.10","Betsson: Liverpool Corners Over 5.5 @ 1.90","William Hill: BTTS Yes @ 1.70"]
+}
+
+Include 3 competitions with 3-4 matches each. Use realistic odds. For ${activeSportOdds} use relevant leagues and team names. No markdown.`;
+
+  try{
+    const p=await callClaude(prompt,2000);
+    document.getElementById('oddsBadge').textContent=p.updated||'Live';
+
+    let html='';
+    (p.competitions||[]).forEach(comp=>{
+      html+=`<div class="odds-sport-header">${comp.name}</div>`;
+      (comp.matches||[]).forEach(m=>{
+        html+=`<div class="odds-match-row">
+          <div class="match-time" style="color:${m.is_live?'#f87171':'#4ade80'}">${m.time}${m.score?'<br><span style="font-size:12px;font-weight:800">'+m.score+'</span>':''}</div>
+          <div class="match-teams">
+            <div class="match-home">${m.home}</div>
+            <div class="match-away">${m.away}</div>
+          </div>
+          <div class="odds-btns">
+            <div class="odd-btn ${parseFloat(m.home_win)<2?'best':''}" onclick="openBet('${m.home}','${m.home_win}')">${m.home_win}<span class="odd-label">1</span></div>
+            <div class="odd-btn" onclick="openBet('Draw','${m.draw}')">${m.draw}<span class="odd-label">X</span></div>
+            <div class="odd-btn" onclick="openBet('${m.away}','${m.away_win}')">${m.away_win}<span class="odd-label">2</span></div>
+          </div>
+        </div>`;
+      });
+    });
+    document.getElementById('oddsList').innerHTML=html||'<div class="loading-state">No matches found</div>';
+
+    document.getElementById('trendingOdds').innerHTML=(p.trending||[]).map((t,i)=>`
+      <div class="trend-item"><div class="trend-num">${i+1}</div><div><div class="trend-name">${t}</div><div class="trend-count">Trending bet</div></div></div>`).join('');
+
+    document.getElementById('bestValue').innerHTML=(p.best_value||[]).map(v=>`
+      <div class="mini-odd-row"><span class="mini-match">${v}</span><span class="mini-odd">Bet</span></div>`).join('');
+
+    document.getElementById('bettingNews').innerHTML=`
+      <div class="mini-odd-row" style="flex-direction:column;align-items:flex-start;gap:3px"><div class="trend-name" style="font-size:13px">Key injury news affecting odds today</div><div class="trend-count">Updated ${p.updated||'now'}</div></div>
+      <div class="mini-odd-row" style="flex-direction:column;align-items:flex-start;gap:3px"><div class="trend-name" style="font-size:13px">Weather alert: Heavy rain expected at 3pm kickoffs</div><div class="trend-count">May affect over/under markets</div></div>
+      <div class="mini-odd-row" style="flex-direction:column;align-items:flex-start;gap:3px"><a href="/" style="font-size:13px;color:#4ade80">Get best odds at Puntroo.com →</a></div>`;
+
+    setStatus('✓ Live odds updated — '+activeSportOdds+' · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),false);
+  }catch(e){
+    document.getElementById('oddsList').innerHTML='<div class="loading-state" style="color:#f87171">⚠ Could not load live odds. Please refresh.</div>';
+    setStatus('⚠ Offline mode — check connection',false);
+  }
+}
+
+function openBet(selection,odds){
+  alert(`Placing bet: ${selection} @ ${odds}\n\nYou'll be redirected to best odds at Puntroo.com`);
+}
+
+// ═══ TRANSFERS ═══
+async function fetchTransfers(){
+  ['transferList','managerList','transferTrending','confirmedDeals'].forEach(id=>{
+    document.getElementById(id).innerHTML='<div class="loading-state"><div class="spin"></div>Loading...</div>';
+  });
+  setStatus('Fetching latest '+activeTransferSport+' transfer rumours...');
+
+  const prompt=`You are a sports transfer journalist. Return ONLY valid JSON with current transfer rumours for ${activeTransferSport} as of May 2026.
+{
+  "transfers": [
+    {"player":"Name","from":"Club","to":"Club","fee":"€80M","prob":"HIGH","source":"Fabrizio Romano","detail":"One sentence status update","age":24,"position":"ST"}
+  ],
+  "managers": [
+    {"name":"Name","current":"Club/Unemployed","linked":"Club","prob":"MEDIUM","detail":"One sentence"}
+  ],
+  "confirmed": [
+    {"player":"Name","from":"Club","to":"Club","fee":"€50M","date":"May 2026"}
+  ],
+  "trending_names": ["PlayerName1","PlayerName2","PlayerName3","PlayerName4","PlayerName5"]
+}
+Include 7 transfer rumours, 3 manager rumours, 3 confirmed deals. Use real names from May 2026. No markdown.`;
+
+  try{
+    const p=await callClaude(prompt,2000);
+    const colors=['#ef4444','#3b82f6','#8b5cf6','#f59e0b','#10b981','#ec4899','#06b6d4'];
+
+    document.getElementById('transferList').innerHTML=(p.transfers||[]).map((t,i)=>`
+      <div class="item-row">
+        <div class="avatar" style="background:${colors[i%colors.length]}">${t.player.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <div class="item-info">
+          <div class="item-name">${t.player} <span style="font-size:11px;color:#64748b">${t.position||''} · Age ${t.age||'?'}</span></div>
+          <div class="item-sub">${t.from} → <strong style="color:#4ade80">${t.to}</strong> · ${t.fee}</div>
+          <div class="item-detail">${t.detail} · 📰 ${t.source}</div>
+        </div>
+        <span class="prob ${t.prob==='HIGH'?'ph':t.prob==='MEDIUM'?'pm':'pl'}">${t.prob}</span>
+      </div>`).join('');
+
+    document.getElementById('managerList').innerHTML=(p.managers||[]).map(m=>`
+      <div class="item-row">
+        <div class="avatar avatar-sq" style="background:#334155;font-size:20px">👔</div>
+        <div class="item-info">
+          <div class="item-name">${m.name}</div>
+          <div class="item-sub">${m.current} → <strong style="color:#4ade80">${m.linked}</strong></div>
+          <div class="item-detail">${m.detail}</div>
+        </div>
+        <span class="prob ${m.prob==='HIGH'?'ph':m.prob==='MEDIUM'?'pm':'pl'}">${m.prob}</span>
+      </div>`).join('');
+
+    document.getElementById('confirmedDeals').innerHTML=(p.confirmed||[]).map(c=>`
+      <div class="item-row">
+        <div style="font-size:20px;flex-shrink:0">✅</div>
+        <div class="item-info">
+          <div class="item-name">${c.player}</div>
+          <div class="item-sub">${c.from} → <strong style="color:#4ade80">${c.to}</strong> · ${c.fee}</div>
+          <div class="item-detail">Confirmed · ${c.date}</div>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('transferTrending').innerHTML=(p.trending_names||[]).map((n,i)=>`
+      <div class="trend-item"><div class="trend-num">${i+1}</div><div><div class="trend-name">#${n}</div><div class="trend-count">Trending transfer</div></div></div>`).join('');
+
+    document.getElementById('transferUpdated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    setStatus('✓ Transfer rumours updated — May 2026',false);
+  }catch(e){
+    document.getElementById('transferList').innerHTML='<div class="loading-state" style="color:#f87171">⚠ Could not load. Please refresh.</div>';
+    setStatus('⚠ Offline',false);
+  }
+}
+
+// ═══ INJURIES ═══
+async function fetchInjuries(){
+  ['injOut','injDoubt','injReturn','injSuspended'].forEach(id=>{
+    document.getElementById(id).innerHTML='<div class="loading-state"><div class="spin"></div></div>';
+  });
+  setStatus('Fetching injury & suspension data...');
+
+  const prompt=`Return ONLY valid JSON with current ${activeInjurySport} injury and suspension data as of May 2026.
+{
+  "out": [{"player":"Name","club":"Club","injury":"Hamstring","return":"3 weeks","detail":"Sustained vs Chelsea"},{"player":"Name","club":"Club","injury":"ACL","return":"Season over","detail":"Surgery confirmed"}],
+  "doubt": [{"player":"Name","club":"Club","injury":"Knock","return":"This weekend","detail":"Training assessment Friday"},{"player":"Name","club":"Club","injury":"Illness","return":"48 hours","detail":"Missed training Wednesday"}],
+  "returning": [{"player":"Name","club":"Club","injury":"Thigh","return":"Returned to training","detail":"Available for selection"},{"player":"Name","club":"Club","injury":"Ankle","return":"Match fit","detail":"Completed full session"}],
+  "suspended": [{"player":"Name","club":"Club","reason":"5 yellow cards","matches":"1 match ban","available":"Next weekend"},{"player":"Name","club":"Club","reason":"Red card","matches":"3 match ban","available":"After cup tie"}]
+}
+Include 4 players per category. Use real player and club names from ${activeInjurySport}. No markdown.`;
+
+  try{
+    const p=await callClaude(prompt,1500);
+
+    const renderInj=(arr,icon,colorClass)=>(arr||[]).map(item=>`
+      <div class="item-row">
+        <div style="font-size:22px;flex-shrink:0">${icon}</div>
+        <div class="item-info">
+          <div class="item-name">${item.player}</div>
+          <div class="item-sub" style="color:#94a3b8">${item.club}</div>
+          <div class="item-detail">${item.injury||item.reason} · ${item.return||item.available}</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">${item.detail||item.matches||''}</div>
+        </div>
+      </div>`).join('');
+
+    document.getElementById('injOut').innerHTML=renderInj(p.out,'🔴');
+    document.getElementById('injDoubt').innerHTML=renderInj(p.doubt,'🟡');
+    document.getElementById('injReturn').innerHTML=renderInj(p.returning,'🟢');
+    document.getElementById('injSuspended').innerHTML=renderInj(p.suspended,'🟠');
+    document.getElementById('injOutCount').textContent=(p.out||[]).length+' players';
+    document.getElementById('injDoubtCount').textContent=(p.doubt||[]).length+' players';
+    setStatus('✓ Injury data updated',false);
+  }catch(e){
+    ['injOut','injDoubt','injReturn','injSuspended'].forEach(id=>{
+      document.getElementById(id).innerHTML='<div class="loading-state" style="color:#f87171">⚠ Error</div>';
+    });
+    setStatus('⚠ Offline',false);
+  }
+}
+
+// ═══ STATS ═══
+async function fetchStats(){
+  ['leagueTable','topScorers','topAssists','topKeepers'].forEach(id=>{
+    document.getElementById(id).innerHTML=id==='leagueTable'?
+      '<tr><td colspan="11"><div class="loading-state"><div class="spin"></div>Loading...</div></td></tr>':
+      '<div class="loading-state"><div class="spin"></div></div>';
+  });
+  setStatus('Fetching stats for '+activeStatsSport+'...');
+
+  const leagueNames={premier_league:'Premier League 2025/26',la_liga:'La Liga 2025/26',bundesliga:'Bundesliga 2025/26',serie_a:'Serie A 2025/26',ligue_1:'Ligue 1 2025/26',allsvenskan:'Allsvenskan 2026',nba:'NBA 2025/26',nfl:'NFL 2025/26',champions_league:'UEFA Champions League 2025/26'};
+  document.getElementById('statsTitle').textContent='📊 '+leagueNames[activeStatsSport];
+
+  const prompt=`Return ONLY valid JSON with current ${activeStatsSport} table and top statistics as of May 2026.
+{
+  "table": [
+    {"pos":1,"club":"Club","p":36,"w":26,"d":5,"l":5,"gf":72,"ga":30,"gd":42,"pts":83,"form":["W","W","D","W","W"]}
+  ],
+  "scorers": [{"rank":1,"player":"Name","club":"Club","goals":27,"assists":8,"nationality":"🏴󠁧󠁢󠁥󠁮󠁧󠁿"}],
+  "assists": [{"rank":1,"player":"Name","club":"Club","assists":16,"goals":8}],
+  "keepers": [{"rank":1,"player":"Name","club":"Club","cs":14,"saves":112,"rating":8.4}]
+}
+Include top 10 clubs in table, top 6 scorers, top 5 assisters, top 4 keepers. Use realistic 2025/26 data. No markdown.`;
+
+  try{
+    const p=await callClaude(prompt,2000);
+
+    document.getElementById('leagueTable').innerHTML=(p.table||[]).map(row=>`
+      <tr>
+        <td class="pos">${row.pos}</td>
+        <td><span class="club-name">${row.club}</span></td>
+        <td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td>
+        <td>${row.gf}</td><td>${row.ga}</td>
+        <td class="gd">${row.gd>0?'+':''}${row.gd}</td>
+        <td class="pts">${row.pts}</td>
+        <td><div class="form-dots">${(row.form||[]).map(f=>`<div class="fd ${f==='W'?'fw':f==='D'?'fd-d':'fl'}" title="${f}"></div>`).join('')}</div></td>
+      </tr>`).join('');
+
+    document.getElementById('topScorers').innerHTML=`<table class="tbl">
+      <thead><tr><th>#</th><th>Player</th><th>Club</th><th>G</th><th>A</th></tr></thead>
+      <tbody>${(p.scorers||[]).map(s=>`<tr><td class="scorer-rank">${s.rank}</td><td><span class="scorer-name">${s.nationality||''} ${s.player}</span></td><td style="color:#94a3b8;font-size:12px">${s.club}</td><td class="scorer-goals">${s.goals}</td><td style="color:#94a3b8">${s.assists}</td></tr>`).join('')}</tbody>
+    </table>`;
+
+    document.getElementById('topAssists').innerHTML=`<table class="tbl">
+      <thead><tr><th>#</th><th>Player</th><th>Club</th><th>A</th><th>G</th></tr></thead>
+      <tbody>${(p.assists||[]).map(s=>`<tr><td class="scorer-rank">${s.rank}</td><td><span class="scorer-name">${s.player}</span></td><td style="color:#94a3b8;font-size:12px">${s.club}</td><td class="scorer-goals">${s.assists}</td><td style="color:#94a3b8">${s.goals}</td></tr>`).join('')}</tbody>
+    </table>`;
+
+    document.getElementById('topKeepers').innerHTML=`<table class="tbl">
+      <thead><tr><th>#</th><th>Keeper</th><th>Club</th><th>CS</th><th>Rating</th></tr></thead>
+      <tbody>${(p.keepers||[]).map(k=>`<tr><td class="scorer-rank">${k.rank}</td><td><span class="scorer-name">${k.player}</span></td><td style="color:#94a3b8;font-size:12px">${k.club}</td><td class="scorer-goals">${k.cs}</td><td style="color:#4ade80">${k.rating}</td></tr>`).join('')}</tbody>
+    </table>`;
+
+    document.getElementById('statsUpdated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    setStatus('✓ Stats updated — '+leagueNames[activeStatsSport],false);
+  }catch(e){
+    document.getElementById('leagueTable').innerHTML='<tr><td colspan="11"><div class="loading-state" style="color:#f87171">⚠ Error loading table</div></td></tr>';
+    setStatus('⚠ Offline',false);
+  }
+}
+
+// ═══ COMMUNITY ═══
+function renderCommunity(){
+  document.getElementById('followCount').textContent=following.length+' clubs followed';
+
+  document.getElementById('clubGrid').innerHTML=CLUBS.map(c=>`
+    <div class="club-card ${following.includes(c.id)?'following':''}" id="cc-${c.id}">
+      <div class="club-em">${c.e}</div>
+      <div class="club-nm">${c.n}</div>
+      <div class="club-fol">${c.l}</div>
+      <button class="fol-btn ${following.includes(c.id)?'unfollow':'follow'}" onclick="toggleFollow('${c.id}')">${following.includes(c.id)?'✓ Following':'Follow'}</button>
+    </div>`).join('');
+
+  const sorted=[...CLUBS].sort(()=>Math.random()-.5).slice(0,8);
+  document.getElementById('activeClubs').innerHTML=sorted.map((c,i)=>`
+    <div class="trend-item"><div class="trend-num">${i+1}</div>
+    <div><div class="trend-name">${c.e} ${c.n}</div><div class="trend-count">${Math.floor(Math.random()*500+50)} posts today</div></div></div>`).join('');
+
+  renderFeed();
+}
+
+function toggleFollow(id){
+  following=following.includes(id)?following.filter(f=>f!==id):[...following,id];
+  localStorage.setItem('p_following',JSON.stringify(following));
+  renderCommunity();
+}
+
+const DEMO_POSTS=[
+  {user:'GunnerFan',color:'#ef4444',club:'Arsenal',text:'The Osimhen links are getting more serious. Multiple credible journalists now. This could be the signing of the summer 🙏',time:'3m ago',likes:87,comments:23},
+  {user:'NordicBetter_SE',color:'#3b82f6',club:'AIK',text:'AIK looking strong this season in Allsvenskan. The squad depth is there finally. Title is absolutely possible! 🖤💛',time:'8m ago',likes:34,comments:9},
+  {user:'TransferGuru',color:'#8b5cf6',club:'Man City',text:'Guardiola staying at City confirmed. New contract signed. Great news — continuity is so important at this level.',time:'14m ago',likes:156,comments:41},
+  {user:'OddsMaster',color:'#f59e0b',club:'Real Madrid',text:'Real Madrid at 2.10 this weekend looks massive value. Home form has been incredible and Mbappé is flying right now ⚡',time:'22m ago',likes:203,comments:67},
+  {user:'BettingPro_UK',color:'#10b981',club:'Liverpool',text:'Over 3.5 goals in Liverpool vs Man City has hit 8 of the last 10 meetings. Looks like value again at 2.40 🎯',time:'31m ago',likes:445,comments:89},
+];
+
+function submitPost(){
+  const text=document.getElementById('postInput').value.trim();
+  if(!text) return;
+  const clubId=document.getElementById('postClub').value;
+  const club=CLUBS.find(c=>c.id===clubId);
+  posts.unshift({id:Date.now(),text,club:club?club.n:'General',user:'You',time:'Just now',likes:0,comments:0,color:'#4ade80',isOwn:true});
+  localStorage.setItem('p_posts',JSON.stringify(posts.slice(0,30)));
+  document.getElementById('postInput').value='';
+  renderFeed();
+}
+
+function likePost(id){
+  likes[id]=(likes[id]||0)+1;
+  localStorage.setItem('p_likes',JSON.stringify(likes));
+  renderFeed();
+}
+
+function renderFeed(){
+  const all=[...posts.map(p=>({...p,isOwn:true})),...DEMO_POSTS];
+  document.getElementById('feedCount').textContent=all.length+' posts';
+  document.getElementById('communityFeed').innerHTML=all.map(p=>`
+    <div class="feed-item">
+      <div class="feed-top">
+        <div class="feed-av" style="background:${p.color||'#334155'};color:${p.color==='#4ade80'?'#0f172a':'#fff'}">${p.user[0]}</div>
+        <div><div class="feed-user">${p.user}${p.isOwn?' <span style="font-size:10px;color:#4ade80">(you)</span>':''}</div>
+        <div class="feed-club-tag">⚽ ${p.club}</div></div>
+        <div class="feed-time">${p.time}</div>
+      </div>
+      <div class="feed-body">${p.text}</div>
+      <div class="feed-acts">
+        <span class="feed-act" onclick="likePost('${p.id||p.user}')">❤️ ${(p.likes||0)+(likes[p.id||p.user]||0)}</span>
+        <span class="feed-act">💬 ${p.comments||0}</span>
+        <span class="feed-act">🔗 Share</span>
+        ${p.isOwn?`<span class="feed-act" style="color:#f87171" onclick="deletePost(${p.id})">🗑 Delete</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function deletePost(id){
+  posts=posts.filter(p=>p.id!==id);
+  localStorage.setItem('p_posts',JSON.stringify(posts));
+  renderFeed();
+}
+
+// ═══ AI MATCH PREDICTOR ═══
+async function predictMatch(){
+  const home=document.getElementById('predHome').value;
+  const away=document.getElementById('predAway').value;
+  if(!home||!away||home===away){document.getElementById('predResult').textContent='Please select two different teams.';return;}
+  document.getElementById('predResult').innerHTML='<div style="display:flex;align-items:center;gap:8px"><div class="spin"></div>AI analysing...</div>';
+  try{
+    const p=await callClaude(`Predict the result of ${home} vs ${away} in May 2026. Return ONLY JSON: {"prediction":"2-1","confidence":"68%","home_win":"45%","draw":"28%","away_win":"27%","key_factors":["Factor 1","Factor 2","Factor 3"],"btts":"Yes","over_2_5":"Yes","best_bet":"${home} to win @ 2.10"}. No markdown.`,500);
+    document.getElementById('predResult').innerHTML=`
+      <div style="background:#334155;border-radius:10px;padding:14px;margin-top:4px">
+        <div style="font-size:22px;font-weight:800;color:#4ade80;text-align:center;margin-bottom:8px">${home} ${p.prediction||'1-1'} ${away}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;text-align:center">
+          <div style="background:#0d1f0d;border-radius:6px;padding:6px"><div style="font-size:11px;color:#64748b">Home</div><div style="color:#4ade80;font-weight:700">${p.home_win||'?'}</div></div>
+          <div style="background:#1e293b;border-radius:6px;padding:6px"><div style="font-size:11px;color:#64748b">Draw</div><div style="color:#fbbf24;font-weight:700">${p.draw||'?'}</div></div>
+          <div style="background:#1e293b;border-radius:6px;padding:6px"><div style="font-size:11px;color:#64748b">Away</div><div style="color:#e2e8f0;font-weight:700">${p.away_win||'?'}</div></div>
+        </div>
+        <div style="font-size:12px;color:#64748b;margin-bottom:6px">Key factors:</div>
+        ${(p.key_factors||[]).map(f=>`<div style="font-size:12.5px;color:#94a3b8;margin-bottom:3px">· ${f}</div>`).join('')}
+        <div style="margin-top:10px;background:#0d1f0d;border-radius:8px;padding:10px;font-size:13px">
+          <span style="color:#64748b">Best bet: </span><strong style="color:#4ade80">${p.best_bet||'Home win'}</strong>
+        </div>
+        <div style="font-size:11px;color:#64748b;margin-top:6px;text-align:center">Confidence: ${p.confidence||'?'} · BTTS: ${p.btts||'?'} · Over 2.5: ${p.over_2_5||'?'}</div>
+      </div>`;
+  }catch(e){
+    document.getElementById('predResult').textContent='Could not generate prediction. Please try again.';
+  }
+}
+
+// ═══ LANGUAGE / COUNTRY DETECTION ═══
+const LANG = {
+  se: { football:'Fotboll', nfl:'Fotboll & NFL', subtitle:'Fotboll & NFL', transfers:'Transferrykten', injuries:'Skador', stats:'Statistik', community:'Community', live:'LIVE', follow:'Följ', following:'Följer ✓', post:'Publicera', placeholder:'Dela dina tankar, tips eller transfernyheter...' },
+  no: { football:'Fotball', nfl:'Fotball & NFL', subtitle:'Fotball & NFL', transfers:'Transferrykter', injuries:'Skader', stats:'Statistikk', community:'Community', live:'LIVE', follow:'Følg', following:'Følger ✓', post:'Publiser', placeholder:'Del dine tanker, tips eller transfernyheter...' },
+  dk: { football:'Fodbold', nfl:'Fodbold & NFL', subtitle:'Fodbold & NFL', transfers:'Transferrygter', injuries:'Skader', stats:'Statistik', community:'Community', live:'LIVE', follow:'Følg', following:'Følger ✓', post:'Udgiv', placeholder:'Del dine tanker, tips eller transfernyheder...' },
+  fi: { football:'Jalkapallo', nfl:'Jalkapallo & NFL', subtitle:'Jalkapallo & NFL', transfers:'Siirtohuhut', injuries:'Loukkaantumiset', stats:'Tilastot', community:'Yhteisö', live:'LIVE', follow:'Seuraa', following:'Seurataan ✓', post:'Julkaise', placeholder:'Jaa ajatuksesi, vinkkisi tai siirtouutiset...' },
+  de: { football:'Fußball', nfl:'Fußball & NFL', subtitle:'Fußball & NFL', transfers:'Transfergerüchte', injuries:'Verletzungen', stats:'Statistiken', community:'Community', live:'LIVE', follow:'Folgen', following:'Gefolgt ✓', post:'Posten', placeholder:'Teile deine Gedanken, Tipps oder Transfernews...' },
+  es: { football:'Fútbol', nfl:'Fútbol & NFL', subtitle:'Fútbol & NFL', transfers:'Rumores', injuries:'Lesiones', stats:'Estadísticas', community:'Comunidad', live:'EN VIVO', follow:'Seguir', following:'Siguiendo ✓', post:'Publicar', placeholder:'Comparte tus pensamientos, pronósticos o noticias...' },
+  it: { football:'Calcio', nfl:'Calcio & NFL', subtitle:'Calcio & NFL', transfers:'Voci di Mercato', injuries:'Infortuni', stats:'Statistiche', community:'Community', live:'LIVE', follow:'Segui', following:'Seguendo ✓', post:'Pubblica', placeholder:'Condividi i tuoi pensieri, pronostici o notizie...' },
+  fr: { football:'Football', nfl:'Football & NFL', subtitle:'Football & NFL', transfers:'Rumeurs', injuries:'Blessures', stats:'Statistiques', community:'Communauté', live:'EN DIRECT', follow:'Suivre', following:'Suivi ✓', post:'Publier', placeholder:'Partagez vos pensées, pronostics ou actualités...' },
+  pt: { football:'Futebol', nfl:'Futebol & NFL', subtitle:'Futebol & NFL', transfers:'Rumores', injuries:'Lesões', stats:'Estatísticas', community:'Comunidade', live:'AO VIVO', follow:'Seguir', following:'A seguir ✓', post:'Publicar', placeholder:'Partilha os teus pensamentos, previsões ou notícias...' },
+  nl: { football:'Voetbal', nfl:'Voetbal & NFL', subtitle:'Voetbal & NFL', transfers:'Transfergeruchten', injuries:'Blessures', stats:'Statistieken', community:'Community', live:'LIVE', follow:'Volgen', following:'Volgend ✓', post:'Plaatsen', placeholder:'Deel je gedachten, tips of transfernieuws...' },
+  tr: { football:'Futbol', nfl:'Futbol & NFL', subtitle:'Futbol & NFL', transfers:'Transfer Söylentileri', injuries:'Sakatlar', stats:'İstatistikler', community:'Topluluk', live:'CANLI', follow:'Takip Et', following:'Takip Ediliyor ✓', post:'Yayınla', placeholder:'Düşüncelerini, tahminlerini veya transfer haberlerini paylaş...' },
+  gr: { football:'Ποδόσφαιρο', nfl:'Ποδόσφαιρο & NFL', subtitle:'Ποδόσφαιρο & NFL', transfers:'Φήμες', injuries:'Τραυματισμοί', stats:'Στατιστικά', community:'Κοινότητα', live:'LIVE', follow:'Ακολούθησε', following:'Ακολουθείς ✓', post:'Δημοσίευση', placeholder:'Μοιράσου τις σκέψεις σου...' },
+  us: { football:'Soccer', nfl:'Soccer & NFL', subtitle:'Soccer & NFL', transfers:'Transfer Rumors', injuries:'Injuries', stats:'Stats & Tables', community:'Community', live:'LIVE', follow:'Follow', following:'Following ✓', post:'Post', placeholder:'Share your thoughts, predictions or transfer news...' },
+  gb: { football:'Football', nfl:'Football & NFL', subtitle:'Football & NFL', transfers:'Transfer Rumours', injuries:'Injuries', stats:'Stats & Tables', community:'Community', live:'LIVE', follow:'Follow', following:'Following ✓', post:'Post', placeholder:'Share your thoughts, predictions or transfer news...' },
+  default: { football:'Football', nfl:'Football & NFL', subtitle:'Football & NFL', transfers:'Transfer Rumours', injuries:'Injuries', stats:'Stats & Tables', community:'Community', live:'LIVE', follow:'Follow', following:'Following ✓', post:'Post', placeholder:'Share your thoughts, predictions or transfer news...' }
+};
+
+function detectLang(){
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+  const lang = navigator.language||'en';
+  if(lang.startsWith('sv')||tz.includes('Stockholm')) return 'se';
+  if(lang.startsWith('no')||tz.includes('Oslo')) return 'no';
+  if(lang.startsWith('da')||tz.includes('Copenhagen')) return 'dk';
+  if(lang.startsWith('fi')||tz.includes('Helsinki')) return 'fi';
+  if(lang.startsWith('de')||tz.includes('Berlin')) return 'de';
+  if(lang.startsWith('es')) return 'es';
+  if(lang.startsWith('it')) return 'it';
+  if(lang.startsWith('fr')) return 'fr';
+  if(lang.startsWith('pt')) return 'pt';
+  if(lang.startsWith('nl')) return 'nl';
+  if(lang.startsWith('tr')) return 'tr';
+  if(lang.startsWith('el')) return 'gr';
+  if(lang.startsWith('en-US')||tz.includes('America')) return 'us';
+  if(lang.startsWith('en-GB')||tz.includes('London')) return 'gb';
+  return 'default';
+}
+
+function applyLang(){
+  const code = detectLang();
+  const L = LANG[code]||LANG.default;
+
+  // Update UI text
+  document.getElementById('siteSubtitle').textContent = L.subtitle;
+  document.title = 'Puntroo — ' + L.subtitle + ' | Live Odds, Stats & Community';
+
+  // Nav tabs
+  const tabs = document.querySelectorAll('.ntab');
+  if(tabs[0]) tabs[0].textContent = '📈 Live Odds';
+  if(tabs[1]) tabs[1].textContent = '🔄 ' + L.transfers;
+  if(tabs[2]) tabs[2].textContent = '🏥 ' + L.injuries;
+  if(tabs[3]) tabs[3].textContent = '📊 ' + L.stats;
+  if(tabs[4]) tabs[4].textContent = '👥 ' + L.community;
+
+  // Sport pills - first one is football
+  const firstPill = document.querySelector('#panel-odds .sp');
+  if(firstPill) firstPill.innerHTML = `⚽ ${L.football}`;
+
+  // Post placeholder
+  const ta = document.getElementById('postInput');
+  if(ta) ta.placeholder = L.placeholder;
+
+  // Post button
+  const pb = document.querySelector('.post-submit');
+  if(pb) pb.textContent = L.post;
+
+  // Live indicator
+  const li = document.querySelector('.live-ind');
+  if(li) li.innerHTML = `<div class="ldot"></div>${L.live}`;
+
+  // Store language for other functions
+  window.CURRENT_LANG = L;
+  window.CURRENT_LANG_CODE = code;
+}
+
+// ═══ INIT ═══
+applyLang();
+fetchOdds();
+setInterval(fetchOdds,10*60*1000);
+</script>
+</body>
+</html>
