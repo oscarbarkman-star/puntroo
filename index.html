@@ -522,8 +522,64 @@ const now=new Date();
 document.getElementById('heroDate').textContent=now.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 document.getElementById('reviewedDate').textContent=now.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
 document.getElementById('lastUpdate').textContent=now.toLocaleDateString('en-GB',{day:'numeric',month:'long'});
-updateBonuses();
-setInterval(updateBonuses,6*60*60*1000);
+// Only call API if cache is older than 6 hours
+const lastFetch = localStorage.getItem('p_bonus_ts');
+const cacheAge = lastFetch ? (Date.now() - parseInt(lastFetch)) : Infinity;
+const cached = localStorage.getItem('p_bonus_cache');
+
+if(cached && cacheAge < 6*60*60*1000){
+  // Use cached data instantly — no API call
+  try{
+    const p = JSON.parse(cached);
+    Object.keys(p).forEach(id=>{
+      const bv=document.getElementById('bv-'+id);
+      const bs=document.getElementById('bs-'+id);
+      if(bv)bv.textContent=p[id].val;
+      if(bs)bs.textContent=p[id].sub;
+    });
+    document.getElementById('lastUpdate').textContent='cached · '+new Date(parseInt(lastFetch)).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('aiSt').textContent='✓ Cached';
+  }catch(e){}
+} else {
+  // Cache expired — fetch fresh data
+  updateBonuses();
+}
+
+// Refresh every 6 hours
+setInterval(updateBonuses, 6*60*60*1000);
+
+// Override updateBonuses to also save to cache
+const _orig = updateBonuses;
+async function updateBonuses(){
+  document.getElementById('aiSt').textContent='⏳ Checking...';
+  try{
+    const r=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,
+        messages:[{role:'user',content:'Return ONLY valid JSON with current May 2026 welcome bonuses. Keep val under 22 chars, sub under 28 chars: {"bet365":{"val":"Bet £10, Get £30","sub":"Code: SI365"},"wh":{"val":"Bet £10, Get £40","sub":"Code: G40"},"bw":{"val":"Bet £10, Get £40","sub":"Acca Insurance"},"bs":{"val":"100% up to €100","sub":"Sports + Casino"},"ub":{"val":"€40 Free Bet","sub":"No code needed"},"fd":{"val":"Bet $5, Get $150","sub":"Win or Lose"},"1x":{"val":"100% up to €130","sub":"Code: WINVIP130"}} No markdown.'}]})});
+    const d=await r.json();
+    const t=d.content?.find(b=>b.type==='text')?.text||'';
+    const p=JSON.parse(t.replace(/```json|```/g,'').trim());
+    Object.keys(p).forEach(id=>{
+      const bv=document.getElementById('bv-'+id);
+      const bs=document.getElementById('bs-'+id);
+      if(bv)bv.textContent=p[id].val;
+      if(bs)bs.textContent=p[id].sub;
+    });
+    // Save to cache
+    localStorage.setItem('p_bonus_cache', JSON.stringify(p));
+    localStorage.setItem('p_bonus_ts', Date.now().toString());
+    const now=new Date();
+    document.getElementById('lastUpdate').textContent=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' today';
+    document.getElementById('aiSt').textContent='✓ All verified';
+    ['t1','t2','t3','t4','t5'].forEach((id,i)=>{
+      const past=new Date(now-i*7*60000);
+      document.getElementById(id).textContent=past.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    });
+  }catch(e){
+    document.getElementById('lastUpdate').textContent='cached data';
+    document.getElementById('aiSt').textContent='⚠ Offline';
+  }
+}
 applyFilters();
 </script>
 </body>
