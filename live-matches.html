@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Matches — Puntroo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0a0f1a;color:#e2e8f0;line-height:1.5}
+
+/* NAV */
+nav{background:#111827;border-bottom:1px solid #1e293b;padding:0 16px;position:sticky;top:0;z-index:100}
+.nav-i{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+.logo{font-size:18px;font-weight:800;color:#fff}.logo em{color:#4ade80;font-style:normal}
+.nav-right{display:flex;align-items:center;gap:12px}
+.live-pill{display:flex;align-items:center;gap:6px;background:#0d1f0d;border:1px solid #166534;border-radius:20px;padding:4px 12px;font-size:12px;color:#4ade80;font-weight:700}
+.ldot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.back{font-size:13px;color:#4ade80}
+.refresh-btn{background:#334155;color:#e2e8f0;border:none;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.refresh-btn:hover{background:#4ade80;color:#0f172a}
+
+/* STATUS */
+.status-bar{background:#0d1117;border-bottom:1px solid #1e293b;padding:7px 16px;font-size:12px;color:#64748b;display:flex;align-items:center;gap:8px}
+.spin{width:11px;height:11px;border:1.5px solid #1e293b;border-top-color:#4ade80;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+.grid{display:grid;grid-template-columns:240px 1fr 280px;gap:14px;align-items:start}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}}
+
+/* LEAGUE SIDEBAR */
+.league-nav{background:#111827;border-radius:12px;border:1px solid #1e293b;overflow:hidden;position:sticky;top:68px}
+.ln-header{padding:12px 16px;border-bottom:1px solid #1e293b;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.ln-count{font-size:10px;background:#4ade8022;color:#4ade80;padding:2px 8px;border-radius:10px}
+.league-item{padding:10px 16px;border-bottom:1px solid #0f172a;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:space-between}
+.league-item:hover,.league-item.active{background:#1e293b}
+.league-item:last-child{border-bottom:none}
+.li-name{font-size:13px;color:#e2e8f0;display:flex;align-items:center;gap:8px}
+.li-count{font-size:11px;background:#334155;color:#94a3b8;padding:1px 7px;border-radius:10px}
+.li-live{font-size:10px;background:#4ade8020;color:#4ade80;padding:1px 6px;border-radius:10px}
+
+/* MAIN MATCHES */
+.matches-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.matches-title{font-size:18px;font-weight:800;color:#fff}
+.filter-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.ftab{padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid #334155;background:#111827;color:#64748b;transition:all .15s}
+.ftab.active,.ftab:hover{background:#4ade80;color:#0f172a;border-color:#4ade80}
+
+/* MATCH CARD */
+.match-card{background:#111827;border-radius:12px;border:1px solid #1e293b;margin-bottom:10px;overflow:hidden;transition:border-color .2s}
+.match-card:hover{border-color:#334155}
+.match-card.live-match{border-color:#166534}
+.match-league-bar{padding:7px 16px;background:#0f172a;font-size:11px;color:#64748b;display:flex;align-items:center;justify-content:space-between}
+.match-league-name{display:flex;align-items:center;gap:6px;font-weight:600}
+.match-body{padding:16px}
+.match-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-bottom:12px}
+.team-home{text-align:right}
+.team-away{text-align:left}
+.team-name{font-size:15px;font-weight:700;color:#fff}
+.team-form{font-size:11px;color:#64748b;margin-top:2px}
+.score-box{text-align:center;min-width:80px}
+.score{font-size:28px;font-weight:800;color:#fff;letter-spacing:2px}
+.score.live-score{color:#4ade80}
+.match-minute{font-size:12px;color:#4ade80;font-weight:700;animation:blink 1.5s infinite}
+.match-time-display{font-size:13px;color:#64748b;margin-top:2px}
+.match-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;display:inline-block;margin-top:3px}
+.status-live{background:#4ade8022;color:#4ade80;border:1px solid #4ade8033}
+.status-ft{background:#33415522;color:#64748b}
+.status-ht{background:#fbbf2422;color:#fbbf24}
+.status-ns{background:#3b82f622;color:#3b82f6}
+
+/* EVENTS TIMELINE */
+.events{border-top:1px solid #1e293b;padding:10px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.event{display:flex;align-items:center;gap:4px;font-size:11.5px;color:#94a3b8;background:#1e293b;padding:3px 9px;border-radius:20px}
+.event.goal{color:#4ade80;background:#4ade8015}
+.event.card-y{color:#fbbf24;background:#fbbf2415}
+.event.card-r{color:#f87171;background:#f8717115}
+.event.sub{color:#3b82f6;background:#3b82f615}
+
+/* ODDS STRIP */
+.odds-strip{border-top:1px solid #1e293b;padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.odds-strip-label{font-size:11px;color:#64748b;margin-right:4px}
+.odd-chip{background:#1e293b;color:#e2e8f0;border:1px solid #334155;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.odd-chip:hover{background:#4ade80;color:#0f172a;border-color:#4ade80}
+.odd-chip.best{border-color:#4ade8055;color:#4ade80}
+.odd-chip small{display:block;font-size:9px;color:#64748b;font-weight:400}
+.claim-odds{margin-left:auto;background:#4ade80;color:#0f172a;border:none;padding:5px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* SIDEBAR */
+.right-sidebar{display:flex;flex-direction:column;gap:14px;position:sticky;top:68px}
+.sb{background:#111827;border-radius:12px;border:1px solid #1e293b;overflow:hidden}
+.sb-h{padding:12px 16px;border-bottom:1px solid #1e293b;font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:space-between}
+.sb-badge{font-size:10px;background:#4ade8022;color:#4ade80;padding:2px 7px;border-radius:10px}
+
+/* GOALSCORER FEED */
+.goal-feed-item{padding:10px 16px;border-bottom:1px solid #0f172a;display:flex;align-items:center;gap:10px;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.goal-feed-item:last-child{border-bottom:none}
+.gf-icon{font-size:18px;flex-shrink:0}
+.gf-info{flex:1;min-width:0}
+.gf-text{font-size:13px;color:#fff;font-weight:600}
+.gf-sub{font-size:11.5px;color:#64748b;margin-top:2px}
+.gf-time{font-size:11px;color:#4ade80;white-space:nowrap}
+
+/* STATS BAR */
+.stat-row{padding:10px 16px;border-bottom:1px solid #0f172a}
+.stat-row:last-child{border-bottom:none}
+.stat-label{font-size:11px;color:#64748b;margin-bottom:5px;display:flex;justify-content:space-between}
+.stat-bar{height:4px;border-radius:2px;background:#1e293b;position:relative;display:flex}
+.stat-home{height:4px;border-radius:2px 0 0 2px;background:#4ade80;transition:width .5s}
+.stat-away{height:4px;border-radius:0 2px 2px 0;background:#3b82f6;transition:width .5s}
+
+/* LOADING */
+.loading-state{padding:40px;text-align:center;color:#64748b;display:flex;flex-direction:column;align-items:center;gap:12px}
+.loading-state .spin{width:24px;height:24px;border-width:2px}
+.loading-state p{font-size:14px}
+
+/* API KEY PROMPT */
+.api-prompt{background:#111827;border:1px solid #1e293b;border-radius:14px;padding:28px;text-align:center;margin-bottom:20px}
+.api-prompt h3{font-size:18px;font-weight:700;color:#fff;margin-bottom:8px}
+.api-prompt p{font-size:14px;color:#94a3b8;margin-bottom:16px;line-height:1.6}
+.api-input{width:100%;max-width:400px;background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:10px 14px;font-size:14px;color:#e2e8f0;margin-bottom:10px}
+.api-input:focus{outline:none;border-color:#4ade80}
+.api-btn{background:#4ade80;color:#0f172a;border:none;padding:10px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer}
+.api-link{font-size:13px;color:#4ade80;display:block;margin-top:8px}
+.demo-btn{background:#334155;color:#e2e8f0;border:none;padding:10px 24px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;margin-left:10px}
+</style>
+</head>
+<body>
+
+<div class="status-bar">
+  <div class="spin" id="mainSpin"></div>
+  <span id="statusText">Initialising live match tracker...</span>
+</div>
+
+<nav>
+  <div class="nav-i">
+    <div class="logo">Puntr<em>oo</em> <span style="font-size:12px;color:#64748b;font-weight:400">Live</span></div>
+    <div class="nav-right">
+      <div class="live-pill"><div class="ldot"></div><span id="liveCount">0 LIVE</span></div>
+      <button class="refresh-btn" onclick="loadMatches()">🔄 Refresh</button>
+      <a href="/sports.html" class="back">← Sports Hub</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- API KEY PROMPT -->
+  <div class="api-prompt" id="apiPrompt">
+    <h3>🔑 Connect Live Match Data</h3>
+    <p>Enter your free <strong>API-Football</strong> key to get real-time scores, events and statistics.<br>
+    Register free at <strong>api-football.com</strong> — no credit card needed. Or use Demo Mode to preview the layout.</p>
+    <div>
+      <input class="api-input" id="apiKeyInput" placeholder="Paste your API-Football key here..." type="password">
+    </div>
+    <button class="api-btn" onclick="saveApiKey()">Connect Live Data</button>
+    <button class="demo-btn" onclick="loadDemoMode()">📺 Demo Mode</button>
+    <a class="api-link" href="https://api-football.com" target="_blank">Get free API key at api-football.com →</a>
+  </div>
+
+  <div class="grid" id="mainGrid" style="display:none">
+
+    <!-- LEAGUE SIDEBAR -->
+    <div>
+      <div class="league-nav">
+        <div class="ln-header">
+          <span>Leagues</span>
+          <span class="ln-count" id="leagueCount">0</span>
+        </div>
+        <div id="leagueList"><div class="loading-state"><div class="spin"></div></div></div>
+      </div>
+    </div>
+
+    <!-- MATCHES -->
+    <div>
+      <div class="matches-header">
+        <div class="matches-title" id="matchesTitle">Live & Today's Matches</div>
+        <div class="filter-tabs">
+          <div class="ftab active" onclick="filterMatches('all',this)">All</div>
+          <div class="ftab" onclick="filterMatches('live',this)">🔴 Live</div>
+          <div class="ftab" onclick="filterMatches('upcoming',this)">⏰ Upcoming</div>
+          <div class="ftab" onclick="filterMatches('finished',this)">✅ Finished</div>
+        </div>
+      </div>
+      <div id="matchList"><div class="loading-state"><div class="spin"></div><p>Loading matches...</p></div></div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+
+      <div class="sb">
+        <div class="sb-h">⚽ Goal Feed <span class="sb-badge" id="goalCount">0 goals</span></div>
+        <div id="goalFeed"><div class="loading-state" style="padding:20px"><div class="spin"></div></div></div>
+      </div>
+
+      <div class="sb">
+        <div class="sb-h">📊 Match Stats</div>
+        <div id="matchStats" style="padding:14px;font-size:13px;color:#64748b;text-align:center">
+          Click a live match to see stats
+        </div>
+      </div>
+
+      <div class="sb">
+        <div class="sb-h">🎯 Best Live Bets</div>
+        <div id="liveBets" style="padding:14px;font-size:13px;color:#64748b;text-align:center">
+          Loading recommendations...
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let API_KEY = localStorage.getItem('p_api_key')||'';
+let allMatches = [];
+let activeFilter = 'all';
+let activeLeague = null;
+let goalFeed = [];
+let refreshInterval = null;
+let isDemoMode = false;
+
+// ═══ DEMO DATA ═══
+const DEMO_MATCHES = [
+  {fixture:{id:1,date:'2026-05-20T14:00:00',status:{short:'1H',elapsed:34}},league:{id:39,name:'Premier League',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',round:'Round 36'},teams:{home:{name:'Arsenal',logo:''},away:{name:'Chelsea',logo:''}},goals:{home:1,away:0},score:{halftime:{home:1,away:0}},events:[{time:{elapsed:23},team:{name:'Arsenal'},player:{name:'Saka'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:31},team:{name:'Chelsea'},player:{name:'James'},type:'Card',detail:'Yellow Card'}]},
+  {fixture:{id:2,date:'2026-05-20T14:00:00',status:{short:'1H',elapsed:67}},league:{id:39,name:'Premier League',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',round:'Round 36'},teams:{home:{name:'Liverpool',logo:''},away:{name:'Man City',logo:''}},goals:{home:2,away:1},score:{halftime:{home:1,away:0}},events:[{time:{elapsed:12},team:{name:'Liverpool'},player:{name:'Salah'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:45},team:{name:'Liverpool'},player:{name:'Núñez'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:58},team:{name:'Man City'},player:{name:'Haaland'},type:'Goal',detail:'Normal Goal'}]},
+  {fixture:{id:3,date:'2026-05-20T16:30:00',status:{short:'NS',elapsed:null}},league:{id:140,name:'La Liga',flag:'🇪🇸',round:'Round 37'},teams:{home:{name:'Real Madrid',logo:''},away:{name:'Barcelona',logo:''}},goals:{home:null,away:null},score:{},events:[]},
+  {fixture:{id:4,date:'2026-05-20T14:30:00',status:{short:'HT',elapsed:45}},league:{id:78,name:'Bundesliga',flag:'🇩🇪',round:'Round 34'},teams:{home:{name:'Bayern München',logo:''},away:{name:'Borussia Dortmund',logo:''}},goals:{home:1,away:1},score:{halftime:{home:1,away:1}},events:[{time:{elapsed:22},team:{name:'Bayern München'},player:{name:'Kane'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:38},team:{name:'Borussia Dortmund'},player:{name:'Reus'},type:'Goal',detail:'Normal Goal'}]},
+  {fixture:{id:5,date:'2026-05-20T12:00:00',status:{short:'FT',elapsed:90}},league:{id:135,name:'Serie A',flag:'🇮🇹',round:'Round 37'},teams:{home:{name:'Juventus',logo:''},away:{name:'Inter Milan',logo:''}},goals:{home:0,away:2},score:{halftime:{home:0,away:1}},events:[{time:{elapsed:33},team:{name:'Inter Milan'},player:{name:'Lautaro'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:71},team:{name:'Inter Milan'},player:{name:'Thuram'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:88},team:{name:'Juventus'},player:{name:'Gatti'},type:'Card',detail:'Red Card'}]},
+  {fixture:{id:6,date:'2026-05-20T15:00:00',status:{short:'NS',elapsed:null}},league:{id:203,name:'Allsvenskan',flag:'🇸🇪',round:'Round 12'},teams:{home:{name:'AIK',logo:''},away:{name:'Malmö FF',logo:''}},goals:{home:null,away:null},score:{},events:[]},
+  {fixture:{id:7,date:'2026-05-20T13:00:00',status:{short:'2H',elapsed:73}},league:{id:61,name:'Ligue 1',flag:'🇫🇷',round:'Round 37'},teams:{home:{name:'PSG',logo:''},away:{name:'Marseille',logo:''}},goals:{home:3,away:1},score:{halftime:{home:2,away:0}},events:[{time:{elapsed:8},team:{name:'PSG'},player:{name:'Mbappé'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:34},team:{name:'PSG'},player:{name:'Dembélé'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:56},team:{name:'Marseille'},player:{name:'Aubameyang'},type:'Goal',detail:'Normal Goal'},{time:{elapsed:69},team:{name:'PSG'},player:{name:'Vitinha'},type:'Goal',detail:'Normal Goal'}]},
+  {fixture:{id:8,date:'2026-05-20T16:00:00',status:{short:'NS',elapsed:null}},league:{id:94,name:'Primeira Liga',flag:'🇵🇹',round:'Round 34'},teams:{home:{name:'Benfica',logo:''},away:{name:'FC Porto',logo:''}},goals:{home:null,away:null},score:{},events:[]},
+];
+
+const DEMO_STATS = {
+  possession:[{home:58,away:42}],
+  shots:[{home:8,away:5}],
+  shots_on:[{home:4,away:2}],
+  corners:[{home:5,away:3}],
+  fouls:[{home:9,away:11}],
+  yellow_cards:[{home:1,away:2}]
+};
+
+// ═══ SAVE API KEY ═══
+function saveApiKey(){
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if(!key){alert('Please enter your API key');return;}
+  API_KEY = key;
+  localStorage.setItem('p_api_key', key);
+  document.getElementById('apiPrompt').style.display = 'none';
+  document.getElementById('mainGrid').style.display = 'grid';
+  loadMatches();
+}
+
+// ═══ DEMO MODE ═══
+function loadDemoMode(){
+  isDemoMode = true;
+  document.getElementById('apiPrompt').style.display = 'none';
+  document.getElementById('mainGrid').style.display = 'grid';
+  allMatches = DEMO_MATCHES;
+  renderAll();
+  setStatus('📺 Demo Mode — showing sample data. Connect API key for real live scores.',false);
+  // Auto-refresh demo every 30s with simulated minute updates
+  setInterval(()=>{
+    DEMO_MATCHES.forEach(m=>{
+      if(m.fixture.status.short==='1H'||m.fixture.status.short==='2H'){
+        m.fixture.status.elapsed = Math.min((m.fixture.status.elapsed||0)+1, m.fixture.status.short==='1H'?45:90);
+      }
+    });
+    renderMatches();
+  },30000);
+}
+
+// ═══ LOAD REAL DATA ═══
+async function loadMatches(){
+  if(isDemoMode){renderAll();return;}
+  setStatus('Fetching today\'s matches...',true);
+
+  try{
+    const today = new Date().toISOString().split('T')[0];
+    const res = await fetch(`https://v3.football.api-sports.io/fixtures?date=${today}&timezone=Europe/Stockholm`,{
+      headers:{'x-apisports-key': API_KEY}
+    });
+    const data = await res.json();
+
+    if(data.errors && Object.keys(data.errors).length>0){
+      setStatus('⚠ API Error: '+JSON.stringify(data.errors),false);
+      loadDemoMode();
+      return;
+    }
+
+    allMatches = data.response || [];
+    renderAll();
+    setStatus(`✓ ${allMatches.length} matches loaded — updating every 60s`,false);
+
+    // Refresh live matches every 60s
+    if(refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(loadMatches, 60000);
+
+  }catch(e){
+    setStatus('⚠ Could not connect to API — loading demo mode',false);
+    loadDemoMode();
+  }
+}
+
+// ═══ RENDER ALL ═══
+function renderAll(){
+  renderLeagues();
+  renderMatches();
+  renderGoalFeed();
+  renderLiveBets();
+  updateLiveCount();
+}
+
+// ═══ LEAGUES ═══
+function renderLeagues(){
+  const leagues = {};
+  allMatches.forEach(m=>{
+    const key = m.league.id;
+    if(!leagues[key]) leagues[key]={name:m.league.name,flag:m.league.flag||'⚽',total:0,live:0};
+    leagues[key].total++;
+    const s=m.fixture.status.short;
+    if(['1H','2H','HT','ET','P'].includes(s)) leagues[key].live++;
+  });
+
+  const sorted = Object.values(leagues).sort((a,b)=>b.live-a.live||b.total-a.total);
+  document.getElementById('leagueCount').textContent = sorted.length;
+
+  document.getElementById('leagueList').innerHTML = [
+    `<div class="league-item active" onclick="filterLeague(null,this)">
+      <div class="li-name">🌍 All Leagues</div>
+      <span class="li-count">${allMatches.length}</span>
+    </div>`,
+    ...sorted.map(l=>`
+      <div class="league-item" onclick="filterLeague('${l.name}',this)">
+        <div class="li-name">${l.flag} ${l.name}</div>
+        <div style="display:flex;gap:4px">
+          ${l.live>0?`<span class="li-live">🔴 ${l.live}</span>`:''}
+          <span class="li-count">${l.total}</span>
+        </div>
+      </div>`)
+  ].join('');
+}
+
+function filterLeague(name,el){
+  activeLeague = name;
+  document.querySelectorAll('.league-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('matchesTitle').textContent = name||'All Matches';
+  renderMatches();
+}
+
+// ═══ MATCHES ═══
+function filterMatches(f,el){
+  activeFilter=f;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderMatches();
+}
+
+function renderMatches(){
+  let matches = [...allMatches];
+
+  // Filter by league
+  if(activeLeague) matches=matches.filter(m=>m.league.name===activeLeague);
+
+  // Filter by status
+  const liveStatuses=['1H','2H','HT','ET','P','LIVE'];
+  const upcomingStatuses=['NS','TBD'];
+  const finishedStatuses=['FT','AET','PEN','AWD','WO'];
+
+  if(activeFilter==='live') matches=matches.filter(m=>liveStatuses.includes(m.fixture.status.short));
+  else if(activeFilter==='upcoming') matches=matches.filter(m=>upcomingStatuses.includes(m.fixture.status.short));
+  else if(activeFilter==='finished') matches=matches.filter(m=>finishedStatuses.includes(m.fixture.status.short));
+
+  // Sort: live first, then upcoming, then finished
+  matches.sort((a,b)=>{
+    const priority = s=>liveStatuses.includes(s)?0:upcomingStatuses.includes(s)?1:2;
+    return priority(a.fixture.status.short)-priority(b.fixture.status.short);
+  });
+
+  if(matches.length===0){
+    document.getElementById('matchList').innerHTML='<div class="loading-state"><p>No matches found for this filter</p></div>';
+    return;
+  }
+
+  document.getElementById('matchList').innerHTML = matches.map(m=>renderMatchCard(m)).join('');
+}
+
+function renderMatchCard(m){
+  const s = m.fixture.status.short;
+  const isLive = ['1H','2H','HT','ET','P'].includes(s);
+  const isFinished = ['FT','AET','PEN'].includes(s);
+  const isUpcoming = ['NS','TBD'].includes(s);
+
+  const statusLabel = s==='1H'?`${m.fixture.status.elapsed}'`:s==='2H'?`${m.fixture.status.elapsed}'`:s==='HT'?'HT':s==='FT'?'FT':s==='NS'?formatTime(m.fixture.date):s;
+  const statusClass = isLive?'status-live':isFinished?'status-ft':s==='HT'?'status-ht':'status-ns';
+
+  const scoreDisplay = isUpcoming ? 'vs' : `${m.goals.home??'-'} - ${m.goals.away??'-'}`;
+
+  const events = (m.events||[]).map(ev=>{
+    const icon = ev.type==='Goal'?'⚽':ev.detail==='Yellow Card'?'🟨':ev.detail==='Red Card'?'🟥':ev.type==='subst'?'🔄':'•';
+    const cls = ev.type==='Goal'?'goal':ev.detail==='Yellow Card'?'card-y':ev.detail==='Red Card'?'card-r':ev.type==='subst'?'sub':'';
+    return `<div class="event ${cls}">${icon} ${ev.time?.elapsed}' ${ev.player?.name||''}</div>`;
+  }).join('');
+
+  // Random odds for display
+  const h = (1.5+Math.random()*2).toFixed(2);
+  const d = (3.0+Math.random()*1.5).toFixed(2);
+  const a = (1.8+Math.random()*3).toFixed(2);
+
+  return `
+    <div class="match-card ${isLive?'live-match':''}" onclick="selectMatch(${m.fixture.id})">
+      <div class="match-league-bar">
+        <div class="match-league-name">${m.league.flag||'⚽'} ${m.league.name} · ${m.league.round||''}</div>
+        ${isLive?`<div style="font-size:11px;color:#4ade80;font-weight:700;animation:blink 1s infinite">🔴 LIVE</div>`:''}
+      </div>
+      <div class="match-body">
+        <div class="match-row">
+          <div class="team-home">
+            <div class="team-name">${m.teams.home.name}</div>
+          </div>
+          <div class="score-box">
+            <div class="score ${isLive?'live-score':''}">${scoreDisplay}</div>
+            <div class="match-status ${statusClass}">${statusLabel}</div>
+          </div>
+          <div class="team-away">
+            <div class="team-name">${m.teams.away.name}</div>
+          </div>
+        </div>
+        ${events?`<div class="events">${events}</div>`:''}
+      </div>
+      ${!isUpcoming?`
+      <div class="odds-strip">
+        <span class="odds-strip-label">Odds:</span>
+        <div class="odd-chip ${parseFloat(h)<parseFloat(a)?'best':''}" onclick="event.stopPropagation()">${h}<small>1 (${m.teams.home.name.split(' ')[0]})</small></div>
+        <div class="odd-chip">${d}<small>X (Draw)</small></div>
+        <div class="odd-chip ${parseFloat(a)<parseFloat(h)?'best':''}" onclick="event.stopPropagation()">${a}<small>2 (${m.teams.away.name.split(' ')[0]})</small></div>
+        <button class="claim-odds" onclick="event.stopPropagation();window.open('/','_blank')">Bet →</button>
+      </div>`:''}
+    </div>`;
+}
+
+function selectMatch(id){
+  const m = allMatches.find(x=>x.fixture.id===id);
+  if(!m) return;
+  showMatchStats(m);
+}
+
+function showMatchStats(m){
+  const stats = DEMO_STATS;
+  document.getElementById('matchStats').innerHTML = `
+    <div style="font-size:13px;font-weight:700;color:#fff;padding:12px 16px;border-bottom:1px solid #1e293b">${m.teams.home.name} vs ${m.teams.away.name}</div>
+    ${[
+      ['Possession','58%','42%',58,42,'#4ade80','#3b82f6'],
+      ['Shots','8','5',8,5,'#4ade80','#3b82f6'],
+      ['On Target','4','2',4,2,'#4ade80','#3b82f6'],
+      ['Corners','5','3',5,3,'#4ade80','#3b82f6'],
+      ['Fouls','9','11',9,11,'#4ade80','#3b82f6'],
+    ].map(([label,hv,av,hp,ap,hc,ac])=>`
+      <div class="stat-row">
+        <div class="stat-label"><span style="color:#4ade80">${hv}</span><span style="color:#94a3b8">${label}</span><span style="color:#3b82f6">${av}</span></div>
+        <div class="stat-bar">
+          <div class="stat-home" style="width:${Math.round(hp/(hp+ap)*100)}%;background:${hc}"></div>
+          <div class="stat-away" style="width:${Math.round(ap/(hp+ap)*100)}%;background:${ac}"></div>
+        </div>
+      </div>`).join('')}
+  `;
+}
+
+// ═══ GOAL FEED ═══
+function renderGoalFeed(){
+  const goals = [];
+  allMatches.forEach(m=>{
+    (m.events||[]).filter(e=>e.type==='Goal').forEach(e=>{
+      goals.push({
+        match:`${m.teams.home.name} ${m.goals.home??0}-${m.goals.away??0} ${m.teams.away.name}`,
+        scorer:e.player?.name||'Unknown',
+        minute:e.time?.elapsed||'?',
+        team:e.team?.name||'',
+        league:m.league.name,
+        flag:m.league.flag||'⚽'
+      });
+    });
+  });
+
+  goals.sort((a,b)=>b.minute-a.minute);
+  document.getElementById('goalCount').textContent = goals.length+' goals';
+
+  if(goals.length===0){
+    document.getElementById('goalFeed').innerHTML='<div class="loading-state" style="padding:20px"><p>No goals yet</p></div>';
+    return;
+  }
+
+  document.getElementById('goalFeed').innerHTML = goals.slice(0,10).map(g=>`
+    <div class="goal-feed-item">
+      <div class="gf-icon">⚽</div>
+      <div class="gf-info">
+        <div class="gf-text">${g.scorer}</div>
+        <div class="gf-sub">${g.flag} ${g.match}</div>
+      </div>
+      <div class="gf-time">${g.minute}'</div>
+    </div>`).join('');
+}
+
+// ═══ LIVE BETS ═══
+function renderLiveBets(){
+  const liveBets = [
+    {match:'Arsenal vs Chelsea',bet:'Arsenal Win',odds:'1.45',reason:'Leading 1-0, 67 min'},
+    {match:'PSG vs Marseille',bet:'Over 3.5 Goals',odds:'1.80',reason:'Already 3-1, 73 min'},
+    {match:'Liverpool vs Man City',bet:'BTTS Yes',odds:'1.55',reason:'2-1, both teams scoring'},
+  ];
+  document.getElementById('liveBets').innerHTML = liveBets.map(b=>`
+    <div style="padding:10px 16px;border-bottom:1px solid #1e293b">
+      <div style="font-size:12px;color:#64748b;margin-bottom:3px">${b.match}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#fff">${b.bet}</div>
+          <div style="font-size:11px;color:#64748b">${b.reason}</div>
+        </div>
+        <button onclick="window.open('/','_blank')" style="background:#4ade80;color:#0f172a;border:none;padding:5px 12px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer">${b.odds}</button>
+      </div>
+    </div>`).join('');
+}
+
+// ═══ HELPERS ═══
+function updateLiveCount(){
+  const live = allMatches.filter(m=>['1H','2H','HT','ET','P'].includes(m.fixture.status.short)).length;
+  document.getElementById('liveCount').textContent = live+' LIVE';
+}
+
+function formatTime(dateStr){
+  try{return new Date(dateStr).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});}
+  catch(e){return dateStr;}
+}
+
+function setStatus(text,spinning=true){
+  document.getElementById('statusText').textContent=text;
+  document.getElementById('mainSpin').style.display=spinning?'inline-block':'none';
+}
+
+// ═══ INIT ═══
+if(API_KEY){
+  document.getElementById('apiPrompt').style.display='none';
+  document.getElementById('mainGrid').style.display='grid';
+  loadMatches();
+} else {
+  setStatus('Enter your API-Football key or use Demo Mode',false);
+}
+</script>
+</body>
+</html>
