@@ -905,36 +905,6 @@ async function predictWC(){
   }
 }
 
-// ═══ SHOW SECTION ═══
-const SECTIONS = ['odds','groups','fixtures','bonuses','tips','culture','faq'];
-const RENDER_MAP = {
-  groups: renderGroups,
-  fixtures: renderFixtures,
-  tips: renderTips,
-  culture: renderCountryMusic,
-  odds: renderWinnerOdds,
-};
-let rendered = {};
-
-function showSection(name, tabEl) {
-  // Hide all sections
-  SECTIONS.forEach(s => {
-    const el = document.getElementById('section-' + s);
-    if (el) el.style.display = 'none';
-  });
-  // Show selected
-  const target = document.getElementById('section-' + name);
-  if (target) target.style.display = 'block';
-  // Update tab active state
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  if (tabEl) tabEl.classList.add('active');
-  // Render content if not yet rendered
-  if (RENDER_MAP[name] && !rendered[name]) {
-    RENDER_MAP[name]();
-    rendered[name] = true;
-  }
-}
-
 // ═══ COUNTRY MUSIC ═══
 const COUNTRY_MUSIC = [
   {country:'🇸🇪 Sverige',songs:['Abba — The Winner Takes It All (1980)','Roxette — It Must Have Been Love (1990)','Avicii — Wake Me Up (2013)'],note:'Sverige har inte en officiell VM-låt — men dessa är det svenska folkets val när man firar fotboll!'},
@@ -962,6 +932,32 @@ function renderCountryMusic(){
         </div>`).join('')}
       <div style="font-size:12px;color:#64748b;margin-top:10px;line-height:1.5;font-style:italic">${c.note}</div>
     </div>`).join('');
+}
+
+// ═══ SHOW SECTION ═══
+const SECTIONS = ['odds','groups','fixtures','bonuses','tips','culture','faq'];
+const RENDER_MAP = {
+  groups: renderGroups,
+  fixtures: renderFixtures,
+  tips: renderTips,
+  culture: renderCountryMusic,
+  odds: renderWinnerOdds,
+};
+let rendered = {'odds': true};
+
+function showSection(name, tabEl) {
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.style.display = 'none';
+  });
+  const target = document.getElementById('section-' + name);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (tabEl) tabEl.classList.add('active');
+  if (RENDER_MAP[name] && !rendered[name]) {
+    RENDER_MAP[name]();
+    rendered[name] = true;
+  }
 }
 </script>
 </body>
