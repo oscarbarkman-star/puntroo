@@ -869,6 +869,10 @@ function updateCountdown(){
 setInterval(updateCountdown,1000);
 updateCountdown();
 
+// ═══ INIT ═══
+renderWinnerOdds();
+rendered['odds'] = true;
+
 // ═══ AI PREDICTOR ═══
 async function predictWC(){
   const home=document.getElementById('predHome').value;
@@ -898,6 +902,36 @@ async function predictWC(){
       </div>`;
   }catch(e){
     document.getElementById('predResult').textContent='Could not generate prediction.';
+  }
+}
+
+// ═══ SHOW SECTION ═══
+const SECTIONS = ['odds','groups','fixtures','bonuses','tips','culture','faq'];
+const RENDER_MAP = {
+  groups: renderGroups,
+  fixtures: renderFixtures,
+  tips: renderTips,
+  culture: renderCountryMusic,
+  odds: renderWinnerOdds,
+};
+let rendered = {};
+
+function showSection(name, tabEl) {
+  // Hide all sections
+  SECTIONS.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.style.display = 'none';
+  });
+  // Show selected
+  const target = document.getElementById('section-' + name);
+  if (target) target.style.display = 'block';
+  // Update tab active state
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (tabEl) tabEl.classList.add('active');
+  // Render content if not yet rendered
+  if (RENDER_MAP[name] && !rendered[name]) {
+    RENDER_MAP[name]();
+    rendered[name] = true;
   }
 }
 
