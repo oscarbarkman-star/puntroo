@@ -224,9 +224,9 @@ footer{background:#060910;color:#334155;padding:28px 20px;text-align:center;font
   </div>
 
   <div class="hero-btns">
-    <button class="btn-primary" onclick="document.getElementById('bonuses').scrollIntoView({behavior:'smooth'})">🎁 Get WC Bonus</button>
-    <button class="btn-outline" onclick="document.getElementById('odds').scrollIntoView({behavior:'smooth'})">📊 See Odds</button>
-    <button class="btn-outline" onclick="document.getElementById('fixtures').scrollIntoView({behavior:'smooth'})">📅 Fixtures</button>
+    <button class="btn-primary" onclick="goToSection('bonuses')">🎁 Get WC Bonus</button>
+    <button class="btn-outline" onclick="goToSection('odds')">📊 See Odds</button>
+    <button class="btn-outline" onclick="goToSection('fixtures')">📅 Fixtures</button>
   </div>
 </div>
 
@@ -285,7 +285,7 @@ footer{background:#060910;color:#334155;padding:28px 20px;text-align:center;font
       </div>
 
       <!-- FIXTURES -->
-      <div id="section-fixtures" style="display:none" id="fixtures">
+      <div id="section-fixtures" style="display:none">
         <div class="sec-label">Match Schedule</div>
         <div class="sec-title">Group Stage Fixtures</div>
         <div class="sec-sub">June 11 — June 27, 2026 · All times shown in CET</div>
@@ -293,7 +293,7 @@ footer{background:#060910;color:#334155;padding:28px 20px;text-align:center;font
       </div>
 
       <!-- BONUSES -->
-      <div id="section-bonuses" style="display:none" id="bonuses">
+      <div id="section-bonuses" style="display:none">
         <div class="sec-label">Exclusive Offers</div>
         <div class="sec-title">Best World Cup 2026 Bonuses</div>
         <div class="sec-sub">Top sportsbook offers for the tournament — verified May 2026</div>
@@ -957,6 +957,17 @@ function showSection(name, tabEl) {
     RENDER_MAP[name]();
     rendered[name] = true;
   }
+}
+
+function goToSection(name){
+  // find the tab matching this section and activate it
+  const tabs = document.querySelectorAll('.tab');
+  let tabEl = null;
+  tabs.forEach(t => { if((t.getAttribute('onclick')||'').includes("'"+name+"'")) tabEl = t; });
+  showSection(name, tabEl);
+  // scroll to the tab bar so the user sees the section
+  const tabBar = document.querySelector('.tab');
+  if(tabBar) tabBar.closest('div').scrollIntoView({behavior:'smooth'});
 }
 </script>
 </body>
