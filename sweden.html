@@ -99,7 +99,8 @@ nav{background:rgba(10,14,26,.97);backdrop-filter:blur(12px);border-bottom:1px s
 .bval{font-size:16px;font-weight:800;color:#fff;line-height:1.2}
 .bsub{font-size:11px;color:#4ade80;font-weight:600;margin-top:3px}
 .fresh{display:inline-flex;align-items:center;gap:3px;font-size:10px;background:#16a34a15;color:#4ade80;padding:2px 8px;border-radius:10px;font-weight:700;margin-top:5px;border:1px solid #16a34a22}
-.claim{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:13px 26px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;white-space:nowrap;box-shadow:0 2px 12px #16a34a33;transition:all .2s;flex-shrink:0;display:block;text-align:center}
+.claim-wrap{display:flex;flex-direction:column;gap:4px;align-items:center;flex-shrink:0}
+.claim{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:13px 26px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;border:none;white-space:nowrap;box-shadow:0 2px 12px #16a34a33;transition:all .2s;display:block;text-align:center;width:100%;box-sizing:border-box}
 .claim:hover{transform:translateY(-2px);box-shadow:0 4px 20px #16a34a55;color:#fff}
 .card-disclaimer{padding:6px 22px 10px;font-size:10px;color:#334155;border-top:1px solid #0f172a}
 
@@ -127,7 +128,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
 @media(max-width:640px){
   .card-inner{grid-template-columns:48px 1fr;gap:12px}
   .sb-bonus{grid-column:1/-1;text-align:left;padding:12px}
-  .claim{grid-column:1/-1}
+  .claim-wrap{grid-column:1/-1;align-items:stretch}
   .nav-links{display:none}
   .vm-inner{gap:16px}
   .vm-match{padding:12px 16px}
@@ -162,14 +163,15 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
       <div class="vm-title">🏆 FIFA <span>VM 2026</span><br>pågår just nu</div>
       <div class="vm-sub">Bästa odds på varje match — live, pre-match och outright</div>
     </div>
-    <div class="vm-center">
+    <div class="vm-center" id="vm-ticker-wrap" style="display:none">
+      <div class="vm-match-label" id="vm-match-label" style="font-size:11px;color:#fbbf24;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;text-align:center">Match</div>
       <div class="vm-match">
-        <div class="vm-team"><div class="vm-flag">🇲🇽</div><div class="vm-tname">Mexico</div></div>
+        <div class="vm-team"><div class="vm-flag" id="wc-f1">⚽</div><div class="vm-tname" id="wc-t1">—</div></div>
         <div>
           <div class="vm-score" id="wc-score">vs</div>
-          <div class="vm-slabel" id="wc-status">Idag 21:00</div>
+          <div class="vm-slabel" id="wc-status">—</div>
         </div>
-        <div class="vm-team"><div class="vm-flag">🇿🇦</div><div class="vm-tname">S. Africa</div></div>
+        <div class="vm-team"><div class="vm-flag" id="wc-f2">⚽</div><div class="vm-tname" id="wc-t2">—</div></div>
       </div>
     </div>
     <div class="vm-right">
@@ -226,7 +228,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
         <div class="bsub">Sport eller Casino</div>
         <div class="fresh">✓ Svensk licens</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+      <div class="claim-wrap">
         <a href="https://record.betsson.com/_qB8DE58gdLxqcKQcxxN-gWNd7ZgqdRLk/1/" class="claim" target="_blank" rel="noopener">Hämta bonus →</a>
         <span style="font-size:9.5px;color:#475569">18+ · Villkor gäller</span>
       </div>
@@ -256,7 +258,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
         <div class="bsub">Sport eller Casino</div>
         <div class="fresh">✓ Svensk licens</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+      <div class="claim-wrap">
         <a href="https://record.nordicbet.com/_qB8DE58gdLzsKBbXtl0xRmNd7ZgqdRLk/1/" class="claim" target="_blank" rel="noopener">Hämta bonus →</a>
         <span style="font-size:9.5px;color:#475569">18+ · Villkor gäller</span>
       </div>
@@ -286,7 +288,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
         <div class="bsub">Casino + Jackpott</div>
         <div class="fresh">✓ Svensk licens</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;align-items:center">
+      <div class="claim-wrap">
         <a href="https://record.jallacasino.se/_qB8DE58gdLx5iPy1T0hNhGNd7ZgqdRLk/1/" class="claim" target="_blank" rel="noopener">Hämta bonus →</a>
         <span style="font-size:9.5px;color:#475569">18+ · Villkor gäller</span>
       </div>
@@ -367,14 +369,57 @@ document.querySelectorAll('.stab').forEach(t=>t.addEventListener('click',functio
   });
   document.getElementById('rc').textContent=`${v} sida${v!==1?'r':''}`;
 }));
-(function wcStatus(){
-  const k=new Date('2026-06-11T21:00:00+02:00'),n=new Date(),d=n-k;
-  const sc=document.getElementById('wc-score'),st=document.getElementById('wc-status');
-  if(d<0){const m=Math.floor(Math.abs(d)/60000),h=Math.floor(m/60);st.textContent=h>0?`Om ${h}h ${m%60}m`:`Om ${m} min`;sc.textContent='vs'}
-  else if(d<115*60000){sc.textContent='— —';st.textContent=`🔴 LIVE ${Math.floor(d/60000)}'`}
-  else{sc.textContent='— —';st.textContent='FT · Se resultat'}
-  setTimeout(wcStatus,30000);
+
+
+
+// LIVE WC DATA via /api/football proxy. Hides ticker if no WC match live/upcoming.
+(async function loadLiveMatch(){
+  const tickerWrap = document.getElementById('vm-ticker-wrap');
+  const score = document.getElementById('wc-score');
+  const status = document.getElementById('wc-status');
+  const t1 = document.getElementById('wc-t1'), t2 = document.getElementById('wc-t2');
+  const f1 = document.getElementById('wc-f1'), f2 = document.getElementById('wc-f2');
+  const lbl = document.getElementById('vm-match-label');
+  const WC_LEAGUE = 1; // FIFA World Cup
+  function flag(cc){ if(!cc) return '⚽'; return cc.toUpperCase().replace(/./g,c=>String.fromCodePoint(127397+c.charCodeAt())); }
+  try{
+    // 1) any live WC match?
+    let r = await fetch('/api/football?type=live');
+    let d = await r.json();
+    let matches = (d.response||[]).filter(m=>m.league&&m.league.id===WC_LEAGUE);
+    let m = matches[0];
+    let live = !!m;
+    // 2) fallback: next WC fixture today
+    if(!m){
+      const today = new Date().toISOString().slice(0,10);
+      r = await fetch('/api/football?type=fixtures&league='+WC_LEAGUE+'&date='+today);
+      d = await r.json();
+      const fx = (d.response||[]).sort((a,b)=>new Date(a.fixture.date)-new Date(b.fixture.date));
+      m = fx.find(x=>['NS','TBD'].includes(x.fixture.status.short)) || fx[0];
+    }
+    if(!m){ if(tickerWrap) tickerWrap.style.display='none'; return; }
+    const h=m.teams.home, a=m.teams.away;
+    if(t1)t1.textContent=h.name; if(t2)t2.textContent=a.name;
+    if(f1)f1.textContent=flag(h.country_code||(h.name||'').slice(0,2));
+    if(f2)f2.textContent=flag(a.country_code||(a.name||'').slice(0,2));
+    const st=m.fixture.status;
+    if(live || ['1H','2H','HT','ET','P','LIVE'].includes(st.short)){
+      score.textContent=(m.goals.home??0)+' - '+(m.goals.away??0);
+      status.textContent='\ud83d\udd34 LIVE '+(st.elapsed||'')+"'";
+      if(lbl)lbl.textContent='Live just nu';
+    } else if(st.short==='FT'||st.short==='AET'||st.short==='PEN'){
+      score.textContent=(m.goals.home??0)+' - '+(m.goals.away??0);
+      status.textContent='FT \u00b7 Slutresultat';
+      if(lbl)lbl.textContent='Senaste matchen';
+    } else {
+      const ko=new Date(m.fixture.date);
+      score.textContent='vs';
+      status.textContent=ko.toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'});
+      if(lbl)lbl.textContent='N\u00e4sta match';
+    }
+  }catch(e){ if(tickerWrap) tickerWrap.style.display='none'; }
 })();
+
 </script>
 </body>
 </html>
