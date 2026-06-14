@@ -27,11 +27,13 @@ export default async function handler(req) {
     // All matches currently in play
     apiUrl = 'https://v3.football.api-sports.io/fixtures?live=all';
   } else if (type === 'fixtures') {
-    // Fixtures for a given date (default today), optional league filter
+    // Fixtures for a given date (default today), optional league filter.
+    // API-Football requires `season` whenever `league` is set.
     const date = url.searchParams.get('date') || new Date().toISOString().slice(0, 10);
     const league = url.searchParams.get('league'); // e.g. 1 = World Cup
+    const season = url.searchParams.get('season') || date.slice(0, 4); // year from date
     apiUrl = `https://v3.football.api-sports.io/fixtures?date=${date}&timezone=${tz}`;
-    if (league) apiUrl += `&league=${encodeURIComponent(league)}`;
+    if (league) apiUrl += `&league=${encodeURIComponent(league)}&season=${encodeURIComponent(season)}`;
   } else if (type === 'standings') {
     const league = url.searchParams.get('league') || '1';
     const season = url.searchParams.get('season') || new Date().getFullYear();
