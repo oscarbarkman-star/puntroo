@@ -46,6 +46,11 @@ nav{background:rgba(10,14,26,.97);backdrop-filter:blur(12px);border-bottom:1px s
 .vm-title span{color:#fbbf24}
 .vm-sub{font-size:14px;color:#94a3b8}
 .vm-center{display:flex;flex-direction:column;align-items:center;gap:6px}
+.vm-static{background:rgba(0,0,0,.45);border:1px solid #fbbf2433;border-radius:16px;padding:22px 32px;text-align:center;min-width:200px}
+.vm-static-num{font-size:30px;font-weight:800;color:#fbbf24;line-height:1}
+.vm-static-row{margin-bottom:6px}
+.vm-static-sub{font-size:13px;color:#94a3b8;font-weight:600;margin-bottom:10px}
+.vm-static-note{font-size:12px;color:#64748b;max-width:240px;line-height:1.4}
 .vm-match{background:rgba(0,0,0,.5);border:1px solid #fbbf2433;border-radius:14px;padding:16px 24px;display:flex;align-items:center;gap:20px}
 .vm-team{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:70px}
 .vm-flag{font-size:32px;line-height:1}
@@ -163,15 +168,11 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
       <div class="vm-title">🏆 FIFA <span>VM 2026</span><br>pågår just nu</div>
       <div class="vm-sub">Bästa odds på varje match — live, pre-match och outright</div>
     </div>
-    <div class="vm-center" id="vm-ticker-wrap" style="display:none">
-      <div class="vm-match-label" id="vm-match-label" style="font-size:11px;color:#fbbf24;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;text-align:center">Match</div>
-      <div class="vm-match">
-        <div class="vm-team"><div class="vm-flag" id="wc-f1">⚽</div><div class="vm-tname" id="wc-t1">—</div></div>
-        <div>
-          <div class="vm-score" id="wc-score">vs</div>
-          <div class="vm-slabel" id="wc-status">—</div>
-        </div>
-        <div class="vm-team"><div class="vm-flag" id="wc-f2">⚽</div><div class="vm-tname" id="wc-t2">—</div></div>
+    <div class="vm-center">
+      <div class="vm-static">
+        <div class="vm-static-row"><span class="vm-static-num">64 matcher</span></div>
+        <div class="vm-static-sub">USA · Kanada · Mexiko</div>
+        <div class="vm-static-note">Följ alla matcher och spela med VM Odds Boost hos Betsson</div>
       </div>
     </div>
     <div class="vm-right">
@@ -372,53 +373,7 @@ document.querySelectorAll('.stab').forEach(t=>t.addEventListener('click',functio
 
 
 
-// LIVE WC DATA via /api/football proxy. Hides ticker if no WC match live/upcoming.
-(async function loadLiveMatch(){
-  const tickerWrap = document.getElementById('vm-ticker-wrap');
-  const score = document.getElementById('wc-score');
-  const status = document.getElementById('wc-status');
-  const t1 = document.getElementById('wc-t1'), t2 = document.getElementById('wc-t2');
-  const f1 = document.getElementById('wc-f1'), f2 = document.getElementById('wc-f2');
-  const lbl = document.getElementById('vm-match-label');
-  const WC_LEAGUE = 1; // FIFA World Cup
-  function flag(cc){ if(!cc) return '⚽'; return cc.toUpperCase().replace(/./g,c=>String.fromCodePoint(127397+c.charCodeAt())); }
-  try{
-    // 1) any live WC match?
-    let r = await fetch('/api/football?type=live');
-    let d = await r.json();
-    let matches = (d.response||[]).filter(m=>m.league&&m.league.id===WC_LEAGUE);
-    let m = matches[0];
-    let live = !!m;
-    // 2) fallback: next WC fixture today
-    if(!m){
-      const today = new Date().toISOString().slice(0,10);
-      r = await fetch('/api/football?type=fixtures&league='+WC_LEAGUE+'&date='+today+'&season='+today.slice(0,4));
-      d = await r.json();
-      const fx = (d.response||[]).sort((a,b)=>new Date(a.fixture.date)-new Date(b.fixture.date));
-      m = fx.find(x=>['NS','TBD'].includes(x.fixture.status.short)) || fx[0];
-    }
-    if(!m){ if(tickerWrap) tickerWrap.style.display='none'; return; }
-    const h=m.teams.home, a=m.teams.away;
-    if(t1)t1.textContent=h.name; if(t2)t2.textContent=a.name;
-    if(f1)f1.textContent=flag(h.country_code||(h.name||'').slice(0,2));
-    if(f2)f2.textContent=flag(a.country_code||(a.name||'').slice(0,2));
-    const st=m.fixture.status;
-    if(live || ['1H','2H','HT','ET','P','LIVE'].includes(st.short)){
-      score.textContent=(m.goals.home??0)+' - '+(m.goals.away??0);
-      status.textContent='\ud83d\udd34 LIVE '+(st.elapsed||'')+"'";
-      if(lbl)lbl.textContent='Live just nu';
-    } else if(st.short==='FT'||st.short==='AET'||st.short==='PEN'){
-      score.textContent=(m.goals.home??0)+' - '+(m.goals.away??0);
-      status.textContent='FT \u00b7 Slutresultat';
-      if(lbl)lbl.textContent='Senaste matchen';
-    } else {
-      const ko=new Date(m.fixture.date);
-      score.textContent='vs';
-      status.textContent=ko.toLocaleTimeString('sv-SE',{hour:'2-digit',minute:'2-digit'});
-      if(lbl)lbl.textContent='N\u00e4sta match';
-    }
-  }catch(e){ if(tickerWrap) tickerWrap.style.display='none'; }
-})();
+
 
 </script>
 </body>
