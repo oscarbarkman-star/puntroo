@@ -392,7 +392,7 @@ document.querySelectorAll('.stab').forEach(t=>t.addEventListener('click',functio
     // 2) fallback: next WC fixture today
     if(!m){
       const today = new Date().toISOString().slice(0,10);
-      r = await fetch('/api/football?type=fixtures&league='+WC_LEAGUE+'&date='+today);
+      r = await fetch('/api/football?type=fixtures&league='+WC_LEAGUE+'&date='+today+'&season='+today.slice(0,4));
       d = await r.json();
       const fx = (d.response||[]).sort((a,b)=>new Date(a.fixture.date)-new Date(b.fixture.date));
       m = fx.find(x=>['NS','TBD'].includes(x.fixture.status.short)) || fx[0];
