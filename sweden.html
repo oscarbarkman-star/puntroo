@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Betsson Group i Sverige 2026 — Betsson, NordicBet & Jalla Casino | Puntroo</title>
-<meta name="description" content="Puntroo är affiliate-partner till Betsson Group. Här presenterar vi deras tre svenska varumärken med Spelinspektionens licens: Betsson, NordicBet och Jalla Casino.">
+<meta name="description" content="Puntroo är affiliate-partner till Betsson Group. Vi presenterar deras tre svenska varumärken med Spelinspektionens licens: Betsson, NordicBet och Jalla Casino.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://puntroo.com/sweden.html">
 <script type="application/ld+json">
@@ -141,6 +141,27 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
   .vm-score{font-size:24px}
   .vm-flag{font-size:24px}
 }
+
+/* PREMIER LEAGUE / CAMPAIGN CYCLE BANNER */
+.pl-banner{background:linear-gradient(135deg,#0a1420 0%,#0d1e2e 30%,#0a2f1c 65%,#08150e 100%);border-bottom:2px solid #16a34a55;position:relative;overflow:hidden}
+.pl-banner::before{content:'⚽';position:absolute;font-size:520px;opacity:.028;right:-100px;top:-140px;pointer-events:none;line-height:1;transform:rotate(-15deg)}
+.pl-banner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#16a34a 30%,#16a34a 70%,transparent)}
+.pl-inner{max-width:1100px;margin:0 auto;padding:36px 20px 32px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;position:relative;z-index:1}
+.pl-left{display:flex;flex-direction:column;gap:10px}
+.pl-eyebrow{display:inline-block;font-size:11px;color:#4ade80;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);padding:4px 12px;border-radius:14px;width:fit-content}
+.pl-title{font-size:clamp(26px,4vw,40px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-.5px}
+.pl-title span{color:#4ade80}
+.pl-sub{font-size:15px;color:#94a3b8;line-height:1.5;max-width:440px}
+.pl-cta-row{margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+.pl-cta{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:800;white-space:nowrap;display:inline-block;box-shadow:0 4px 24px rgba(22,163,74,.4);transition:all .2s}
+.pl-cta:hover{transform:translateY(-2px);box-shadow:0 6px 32px rgba(22,163,74,.55);color:#fff}
+.pl-secondary{font-size:13px;color:#64748b;margin-top:2px}
+.pl-secondary a{color:#4ade80;font-weight:600}
+.pl-center{background:rgba(0,0,0,.5);border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:22px 32px;text-align:center;min-width:220px;box-shadow:0 0 40px rgba(74,222,128,.05)}
+.pl-countdown-label{font-size:11px;color:#64748b;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.pl-countdown{font-size:32px;font-weight:800;color:#4ade80;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+.pl-kickoff{font-size:12px;color:#94a3b8;font-weight:600;margin-top:8px}
+@media(max-width:640px){.pl-inner{grid-template-columns:1fr;gap:20px}.pl-center{width:100%}.pl-title{font-size:26px}}
 </style>
 </head>
 <body>
@@ -155,7 +176,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
       <a href="/denmark.html" class="nl">🇩🇰 Danmark</a>
       
       
-      <a href="/world-cup-2026.html" class="nl" style="color:#fbbf24">🏆 VM 2026</a>
+      
     </div>
     <button class="nav-cta" onclick="window.open('https://record.betsson.com/_qB8DE58gdLxUMIOSscabBWNd7ZgqdRLk/1/','_blank')">Hämta bonus →</button>
   </div>
@@ -166,26 +187,22 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
 </div>
 
 <!-- VM BANNER — STOR -->
-<div class="vm-banner">
-  <div class="vm-inner">
-    <div class="vm-left">
-      <div class="vm-live"><div class="vm-dot"></div>LIVE NU</div>
-      <div class="vm-title">🏆 FIFA <span>VM 2026</span><br>pågår just nu</div>
-      <div class="vm-sub">Bästa odds på varje match — live, pre-match och outright</div>
-    </div>
-    <div class="vm-center">
-      <div class="vm-static">
-        <div class="vm-static-row"><span class="vm-static-num">64 matcher</span></div>
-        <div class="vm-static-sub">USA · Kanada · Mexiko</div>
-        <div class="vm-static-note">Följ alla matcher och spela med VM Odds Boost hos Betsson</div>
+<!-- CAMPAIGN CYCLE MODULE — content set by JS, edit campaigns[] in script below -->
+<div class="pl-banner">
+  <div class="pl-inner">
+    <div class="pl-left">
+      <div class="pl-eyebrow" id="pl-eyebrow">⚽ Football</div>
+      <div class="pl-title" id="pl-title">—</div>
+      <div class="pl-sub" id="pl-sub">—</div>
+      <div class="pl-cta-row">
+        <a href="#" class="pl-cta" id="pl-cta" target="_blank" rel="noopener">→</a>
       </div>
+      <div class="pl-secondary" id="pl-secondary"></div>
     </div>
-    <div class="vm-right">
-      <div class="vm-boost">
-        <div class="vm-boost-label">⚡ Betsson Erbjudande</div>
-        <div class="vm-boost-val">VM Odds Boost aktiv</div>
-      </div>
-      <a href="https://record.betsson.com/_qB8DE58gdLzCkpPqIAnCR2Nd7ZgqdRLk/1/" class="vm-cta" target="_blank" rel="noopener">⚽ Spela på VM hos Betsson →</a>
+    <div class="pl-center">
+      <div class="pl-countdown-label" id="pl-countdown-label">—</div>
+      <div class="pl-countdown" id="pl-countdown">—</div>
+      <div class="pl-kickoff" id="pl-kickoff"></div>
     </div>
   </div>
 </div>
@@ -317,37 +334,12 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
   </div>
   <div class="faq-item">
     <div class="faq-q" onclick="tFaq(this)">Vad är VM Odds Boost hos Betsson? <span class="faq-icon">+</span></div>
-    <div class="faq-a">Betssons VM Odds Boost ger förhöjda odds på utvalda VM 2026-matcher. <strong>Tidsbegränsat under turneringen</strong> — villkor gäller.</div>
+    
   </div>
 </div>
 
   <!-- VM UTANFÖR PLANEN -->
-  <div style="margin-top:16px">
-    <div style="font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">🎉 VM utanför planen</div>
-    <div style="font-size:13px;color:#64748b;margin-bottom:14px">Musik, mat och allt annat som gör VM 2026 legendariskt</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-      <a href="/world-cup-2026.html" style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:18px;transition:all .2s;display:block" onmouseover="this.style.borderColor='#fbbf2444'" onmouseout="this.style.borderColor='#1e293b'">
-        <div style="font-size:24px;margin-bottom:8px">🎵</div>
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">VM-låtar genom tiderna</div>
-        <div style="font-size:12px;color:#64748b">Topp 3 alla tiders + bästa låtarna från 12 länder</div>
-      </a>
-      <a href="/world-cup-2026.html" style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:18px;transition:all .2s;display:block" onmouseover="this.style.borderColor='#fbbf2444'" onmouseout="this.style.borderColor='#1e293b'">
-        <div style="font-size:24px;margin-bottom:8px">🍕</div>
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">VM Binge-guide</div>
-        <div style="font-size:12px;color:#64748b">Bästa VM-maten per land + försnacks per matchtyp</div>
-      </a>
-      <a href="/world-cup-2026.html" style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:18px;transition:all .2s;display:block" onmouseover="this.style.borderColor='#fbbf2444'" onmouseout="this.style.borderColor='#1e293b'">
-        <div style="font-size:24px;margin-bottom:8px">🍺</div>
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">VM Drinking Game</div>
-        <div style="font-size:12px;color:#64748b">Reglerna som gör gruppspelet oförglömligt</div>
-      </a>
-      <a href="/world-cup-2026.html" style="background:#111827;border:1px solid #1e293b;border-radius:12px;padding:18px;transition:all .2s;display:block" onmouseover="this.style.borderColor='#fbbf2444'" onmouseout="this.style.borderColor='#1e293b'">
-        <div style="font-size:24px;margin-bottom:8px">⚽</div>
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Ikoniska VM-ögonblick</div>
-        <div style="font-size:12px;color:#64748b">Zidane, Maradona, Iniesta — ögonblicken som definierade VM</div>
-      </a>
-    </div>
-  </div>
+  
 
 </div>
 
@@ -358,7 +350,7 @@ footer{background:#060910;padding:28px 20px;text-align:center;border-top:1px sol
 <footer>
   <div class="flogo">Puntr<em>oo</em></div>
   <div class="flinks">
-    <a href="/">Hem</a><a href="/sweden.html">Sverige</a><a href="/denmark.html">Danmark</a><a href="/world-cup-2026.html">VM 2026</a><a href="/affiliate-disclosure.html">Upplysning</a><a href="/privacy-policy.html">Integritet</a>
+    <a href="/">Hem</a><a href="/sweden.html">Sverige</a><a href="/denmark.html">Danmark</a><a href="/affiliate-disclosure.html">Upplysning</a><a href="/privacy-policy.html">Integritet</a>
   </div>
   <div class="fdisc">Puntroo är en oberoende affiliatewebbplats. Enbart operatörer med Spelinspektionens licens. 18+ · stodlinjen.se · spelpaus.se · © 2026 Puntroo</div>
 </footer>
@@ -379,6 +371,202 @@ document.querySelectorAll('.stab').forEach(t=>t.addEventListener('click',functio
 
 
 
+
+
+// Premier League 2026/27 countdown — kickoff Aug 21 2026, 20:00 BST = 21:00 CET
+
+
+// ═══ CAMPAIGN CYCLE ROTATION ═══
+// Auto-switches banner content based on current date. Update campaigns
+// array to add/change seasons. No manual banner edits needed.
+(function campaignRotate(){
+  var lang = document.documentElement.lang || 'en';
+  var t = {
+    sv: {
+      kickoff_label: 'Avspark om',
+      live_label: 'Live nu',
+      cta_next: '⚽ Se PL-odds hos Betsson →',
+      cta_live_pl: '⚽ Se veckans matcher hos Betsson →',
+      cta_live_cl: '⚽ Se CL-odds hos Betsson →',
+      eyebrow_next: '⚽ Kommande säsong · Football',
+      eyebrow_live: '⚽ Pågår nu · Football',
+      pl_next_title: 'Premier League <span>2026/27</span><br>startar snart',
+      pl_next_sub: 'Avspark fredag 21 augusti · Arsenal möter Coventry City på Emirates',
+      pl_live_title: 'Premier League <span>2026/27</span><br>pågår just nu',
+      pl_live_sub: 'Se veckans matcher och odds hos Betsson — Spelinspektionen-licens',
+      cl_next_title: 'Champions League <span>2026/27</span><br>startar snart',
+      cl_next_sub: 'Ligafas-start tisdag 8 september · Europas bästa klubblag i ny format',
+      cl_live_title: 'Champions League <span>2026/27</span><br>pågår just nu',
+      cl_live_sub: 'Ligafasen är igång — se veckans matcher och odds hos Betsson',
+      secondary_pl: 'Redan igång: <a href="https://record.betsson.com/_qB8DE58gdLyJwexPPlmf3GNd7ZgqdRLk/1/" target="_blank" rel="noopener">Allsvenskan odds hos Betsson →</a>',
+      secondary_cl: 'Pågår också: <a href="https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/" target="_blank" rel="noopener">Premier League odds hos Betsson →</a>',
+      units: {d:'d', h:'h', m:'m'},
+      kickoff_pl: '21 aug 2026 · 21:00 CET',
+      kickoff_cl: '8 sep 2026 · 21:00 CET',
+      live_now: 'IGÅNG'
+    },
+    da: {
+      kickoff_label: 'Startskud om',
+      live_label: 'Live nu',
+      cta_next: '⚽ Se PL-odds hos Betsson →',
+      cta_live_pl: '⚽ Se ugens kampe hos Betsson →',
+      cta_live_cl: '⚽ Se CL-odds hos Betsson →',
+      eyebrow_next: '⚽ Kommende sæson · Fodbold',
+      eyebrow_live: '⚽ I gang nu · Fodbold',
+      pl_next_title: 'Premier League <span>2026/27</span><br>begynder snart',
+      pl_next_sub: 'Startskud fredag 21. august · Arsenal møder Coventry City på Emirates',
+      pl_live_title: 'Premier League <span>2026/27</span><br>er i gang',
+      pl_live_sub: 'Se ugens kampe og odds hos Betsson — Spillemyndigheden-licens',
+      cl_next_title: 'Champions League <span>2026/27</span><br>begynder snart',
+      cl_next_sub: 'Ligafase-start tirsdag 8. september · Europas bedste klubhold i nyt format',
+      cl_live_title: 'Champions League <span>2026/27</span><br>er i gang',
+      cl_live_sub: 'Ligafasen kører — se ugens kampe og odds hos Betsson',
+      secondary_pl: 'REKLAME · <a href="https://record.betsson.dk/_qB8DE58gdLwxsy6GrgZ5bmNd7ZgqdRLk/1/" target="_blank" rel="noopener">Sportsbook velkomstbonus →</a>',
+      secondary_cl: 'REKLAME · <a href="https://record.betsson.dk/_qB8DE58gdLzM93KkfZdVyGNd7ZgqdRLk/1/" target="_blank" rel="noopener">Se odds hos Betsson →</a>',
+      units: {d:'d', h:'t', m:'m'},
+      kickoff_pl: '21. aug 2026 · 21:00 CET',
+      kickoff_cl: '8. sep 2026 · 21:00 CET',
+      live_now: 'I GANG'
+    },
+    en: {
+      kickoff_label: 'Kick-off in',
+      live_label: 'Live now',
+      cta_next: '⚽ See PL odds at Betsson →',
+      cta_live_pl: '⚽ See this week\'s matches at Betsson →',
+      cta_live_cl: '⚽ See CL odds at Betsson →',
+      eyebrow_next: '⚽ Upcoming season · Football',
+      eyebrow_live: '⚽ Live now · Football',
+      pl_next_title: 'Premier League <span>2026/27</span><br>starts soon',
+      pl_next_sub: 'Kick-off Friday 21 August · Arsenal vs Coventry City at the Emirates',
+      pl_live_title: 'Premier League <span>2026/27</span><br>is under way',
+      pl_live_sub: 'See this week\'s matches and odds at Betsson — Nordic licensed sportsbook',
+      cl_next_title: 'Champions League <span>2026/27</span><br>starts soon',
+      cl_next_sub: 'League phase kicks off Tuesday 8 September · Europe\'s top clubs in new format',
+      cl_live_title: 'Champions League <span>2026/27</span><br>is under way',
+      cl_live_sub: 'The league phase is on — see this week\'s matches and odds at Betsson',
+      secondary_pl: 'Also live: <a href="https://record.betsson.com/_qB8DE58gdLyJwexPPlmf3GNd7ZgqdRLk/1/" target="_blank" rel="noopener">Allsvenskan odds at Betsson →</a>',
+      secondary_cl: 'Also live: <a href="https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/" target="_blank" rel="noopener">Premier League odds at Betsson →</a>',
+      units: {d:'d', h:'h', m:'m'},
+      kickoff_pl: '21 Aug 2026 · 20:00 BST',
+      kickoff_cl: '8 Sep 2026 · 21:00 CET',
+      live_now: 'LIVE'
+    }
+  };
+  var L = t[lang] || t.en;
+
+  // Campaigns — edit here to change what's shown when.
+  // start/end are ISO dates. mode 'next' shows countdown, 'live' shows in-progress.
+  var campaigns = [
+    {
+      id: 'pl-next',
+      start: '2026-07-26T00:00:00',
+      end: '2026-08-21T20:00:00+01:00',
+      mode: 'next',
+      title: L.pl_next_title, sub: L.pl_next_sub,
+      eyebrow: L.eyebrow_next, cta_text: L.cta_next,
+      kickoff: '2026-08-21T20:00:00+01:00',
+      kickoff_display: L.kickoff_pl,
+      cta_href: 'https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/',
+      secondary: L.secondary_pl
+    },
+    {
+      id: 'pl-live',
+      start: '2026-08-21T20:00:00+01:00',
+      end: '2026-09-08T19:00:00+02:00',
+      mode: 'live',
+      title: L.pl_live_title, sub: L.pl_live_sub,
+      eyebrow: L.eyebrow_live, cta_text: L.cta_live_pl,
+      kickoff_display: L.live_now,
+      cta_href: 'https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/',
+      secondary: L.secondary_pl
+    },
+    {
+      id: 'cl-next',
+      start: '2026-09-08T19:00:00+02:00',
+      end: '2026-09-08T21:00:00+02:00',
+      mode: 'next',
+      title: L.cl_next_title, sub: L.cl_next_sub,
+      eyebrow: L.eyebrow_next, cta_text: L.cta_live_cl,
+      kickoff: '2026-09-08T21:00:00+02:00',
+      kickoff_display: L.kickoff_cl,
+      cta_href: 'https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/',
+      secondary: L.secondary_cl
+    },
+    {
+      id: 'cl-live',
+      start: '2026-09-08T21:00:00+02:00',
+      end: '2026-12-15T00:00:00+01:00',
+      mode: 'live',
+      title: L.cl_live_title, sub: L.cl_live_sub,
+      eyebrow: L.eyebrow_live, cta_text: L.cta_live_cl,
+      kickoff_display: L.live_now,
+      cta_href: 'https://record.betsson.com/_qB8DE58gdLxYvqj66yXt3mNd7ZgqdRLk/1/',
+      secondary: L.secondary_cl
+    }
+  ];
+
+  function pick(now){
+    for(var i=0;i<campaigns.length;i++){
+      var c = campaigns[i];
+      if(now >= new Date(c.start) && now < new Date(c.end)) return c;
+    }
+    return campaigns[campaigns.length-1]; // fallback: last one
+  }
+
+  function render(){
+    var now = new Date();
+    var c = pick(now);
+    var titleEl = document.getElementById('pl-title');
+    var subEl = document.getElementById('pl-sub');
+    var eyeEl = document.getElementById('pl-eyebrow');
+    var ctaEl = document.getElementById('pl-cta');
+    var kickLabelEl = document.getElementById('pl-countdown-label');
+    var countEl = document.getElementById('pl-countdown');
+    var kickTimeEl = document.getElementById('pl-kickoff');
+    var secEl = document.getElementById('pl-secondary');
+
+    if(!titleEl) return;
+
+    titleEl.innerHTML = c.title;
+    subEl.textContent = c.sub;
+    eyeEl.textContent = c.eyebrow;
+    ctaEl.textContent = c.cta_text;
+    ctaEl.href = c.cta_href;
+    if(secEl) secEl.innerHTML = c.secondary;
+
+    if(c.mode === 'next' && c.kickoff){
+      kickLabelEl.textContent = L.kickoff_label;
+      kickTimeEl.textContent = c.kickoff_display;
+      updateCountdown(c.kickoff, countEl);
+    } else {
+      kickLabelEl.textContent = L.live_label;
+      countEl.textContent = c.kickoff_display; // "LIVE" / "IGÅNG"
+      countEl.style.color = '#f87171';
+      kickTimeEl.textContent = '';
+    }
+  }
+
+  function updateCountdown(kickoffISO, el){
+    var kickoff = new Date(kickoffISO);
+    function tick(){
+      var now = new Date();
+      var diff = kickoff - now;
+      if(diff <= 0){ render(); return; } // switch to next campaign
+      var d = Math.floor(diff/86400000);
+      var h = Math.floor((diff%86400000)/3600000);
+      var m = Math.floor((diff%3600000)/60000);
+      el.textContent = d+L.units.d+' '+h+L.units.h+' '+m+L.units.m;
+      el.style.color = '#4ade80';
+    }
+    tick();
+    if(window._plTimer) clearInterval(window._plTimer);
+    window._plTimer = setInterval(tick, 60000);
+  }
+
+  render();
+  // Re-check every 5 min in case a campaign switch happens while page is open
+  setInterval(render, 300000);
+})();
 
 </script>
 </body>
